@@ -39,18 +39,18 @@ Without that variable, the website uses the four local example slots.
 
 ## Resident images from Dropbox
 
-Resident images use this structure:
+The current Full Dropbox connection discovers every first-level resident folder
+inside:
 
 ```text
-/ACCU/Residents/
-  vincent-neumann/profile.jpg
-  bashti/profile.jpg
-  aura/profile.jpg
-  sohirab/profile.jpg
+/RADIO ACCU RESIDENTS/
 ```
 
-The website proxies the images through its own server route, so Dropbox secrets
-never reach the browser. Add these values to `.env.local`:
+The website automatically chooses the strongest usable JPG, PNG or WebP image
+inside each resident folder. It prefers press, profile and portrait images and
+avoids files named logo, flyer, poster, artwork or gigs. Images are proxied
+through the website, so Dropbox secrets never reach the browser. Add these
+values to `.env.local`:
 
 ```text
 DROPBOX_ACCESS_TOKEN=
