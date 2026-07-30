@@ -5,14 +5,18 @@ type DropboxTokenResponse = {
 };
 
 export function isDropboxConfigured() {
-  return Boolean(
+  return Boolean(process.env.DROPBOX_ACCESS_TOKEN || (
     process.env.DROPBOX_APP_KEY &&
     process.env.DROPBOX_APP_SECRET &&
-    process.env.DROPBOX_REFRESH_TOKEN,
-  );
+    process.env.DROPBOX_REFRESH_TOKEN
+  ));
 }
 
 async function getDropboxAccessToken() {
+  if (process.env.DROPBOX_ACCESS_TOKEN) {
+    return process.env.DROPBOX_ACCESS_TOKEN;
+  }
+
   const appKey = process.env.DROPBOX_APP_KEY;
   const appSecret = process.env.DROPBOX_APP_SECRET;
   const refreshToken = process.env.DROPBOX_REFRESH_TOKEN;

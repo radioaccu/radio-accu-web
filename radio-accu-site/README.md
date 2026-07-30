@@ -53,6 +53,13 @@ The website proxies the images through its own server route, so Dropbox secrets
 never reach the browser. Add these values to `.env.local`:
 
 ```text
+DROPBOX_ACCESS_TOKEN=
+```
+
+The generated token is intended for the first local test. Permanent hosting uses
+a refresh token:
+
+```text
 DROPBOX_APP_KEY=
 DROPBOX_APP_SECRET=
 DROPBOX_REFRESH_TOKEN=
