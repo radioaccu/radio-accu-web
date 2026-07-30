@@ -66,10 +66,10 @@ export default function Home() {
         <a className="mobile-brand" href="#transmission" aria-label="ACCU home">
           <Image
             className="mobile-chrome-logo"
-            src="/accu-chrome-logo.png"
+            src="/accu-chrome-logo-trimmed.png"
             alt="ACCU"
-            width={5000}
-            height={3333}
+            width={3953}
+            height={1533}
             priority
           />
         </a>
@@ -84,10 +84,10 @@ export default function Home() {
         <div className="brand-line">
           <Image
             className="chrome-wordmark"
-            src="/accu-chrome-logo.png"
+            src="/accu-chrome-logo-trimmed.png"
             alt="ACCU"
-            width={5000}
-            height={3333}
+            width={3953}
+            height={1533}
             priority
           />
         </div>

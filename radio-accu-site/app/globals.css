@@ -53,17 +53,14 @@ button { color: inherit; font: inherit; }
 .brand-line {
   position: relative;
   display: grid;
-  height: 122px;
+  height: 88px;
   place-items: center;
-  overflow: hidden;
 }
 
 .chrome-wordmark {
-  width: min(100%, 286px);
+  width: min(72%, 212px);
   height: auto;
-  filter:
-    contrast(1.08)
-    drop-shadow(0 9px 24px rgba(255,255,255,.08));
+  filter: contrast(1.06);
 }
 
 .pixel-mark {
@@ -83,7 +80,7 @@ button { color: inherit; font: inherit; }
 .pixel-mark i:nth-child(9) { opacity: 0; }
 
 .identity-copy {
-  margin-top: 20px;
+  margin-top: 8px;
   font-size: 10px;
   line-height: 1.45;
   text-transform: uppercase;
@@ -328,8 +325,8 @@ button { color: inherit; font: inherit; }
 
 @media (max-width: 1400px) {
   .os-frame { grid-template-columns: 310px minmax(0, 1fr); }
-  .brand-line { height: 105px; }
-  .chrome-wordmark { width: min(100%, 232px); }
+  .brand-line { height: 78px; }
+  .chrome-wordmark { width: min(72%, 178px); }
   .transmission-zone { grid-template-columns: 270px 1fr; }
   .schedule-panel { grid-column: 1 / -1; border-top: 1px solid var(--line); }
   .schedule-list { display: grid; grid-template-columns: 1fr 1fr; }
@@ -357,13 +354,12 @@ button { color: inherit; font: inherit; }
     position: relative;
     display: grid;
     height: 61px;
-    width: 136px;
+    width: 118px;
     place-items: center;
-    overflow: hidden;
     padding: 0 12px;
   }
   .mobile-chrome-logo {
-    width: 122px;
+    width: 94px;
     height: auto;
     filter: contrast(1.08);
   }
