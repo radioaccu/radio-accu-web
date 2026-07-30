@@ -177,8 +177,14 @@ export default function Home() {
 
           <div className="schedule-panel" id="grid">
             <header>
-              <span>Transmission grid</span>
-              <a href="#grid">View full grid ↗</a>
+              <div className="schedule-title">
+                <span>Today&apos;s programme</span>
+                <strong>Sunday transmission grid</strong>
+              </div>
+              <div className="schedule-meta">
+                <span>06 transmissions</span>
+                <a href="#grid">View full grid ↗</a>
+              </div>
             </header>
             <div className="schedule-list">
               {schedule.map(([time, artist, status]) => (
