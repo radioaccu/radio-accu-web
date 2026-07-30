@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MIXCLOUD_LIVE_URL, navigation } from "../_data/site";
+import { navigation } from "../_data/site";
+import { BroadcastLink } from "./BroadcastLink";
 
 export type NavigationKey = (typeof navigation)[number]["key"];
 
@@ -43,9 +44,11 @@ export function SiteHeader({ active }: { active: NavigationKey }) {
           <div><span>Status</span><strong>Grid online</strong></div>
         </div>
 
-        <a className="header-live" href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">
-          <i /> Live
-        </a>
+        <BroadcastLink className="header-live">
+          <i />
+          <span className="when-live">Live</span>
+          <span className="when-archive">Listen</span>
+        </BroadcastLink>
       </header>
 
       <nav className="site-nav" aria-label="Main navigation">
@@ -63,21 +66,21 @@ export function SiteHeader({ active }: { active: NavigationKey }) {
 export function SignalTicker() {
   return (
     <section className="signal-strip" aria-label="Now playing and coming up">
-      <a className="signal-strip-play" href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">
+      <BroadcastLink className="signal-strip-play">
         <span aria-hidden="true">▶</span>
         <span className="sr-only">Watch and listen live</span>
-      </a>
+      </BroadcastLink>
       <div className="signal-strip-window">
         <div className="signal-strip-track">
           {[0, 1].map((copy) => (
             <div className="signal-strip-group" aria-hidden={copy === 1} key={copy}>
-              <span><b>Now transmitting:</b> TX-084 — Vincent Neumann — 14:00–16:00 CET</span>
-              <span><b>Up next:</b> Bashti — 16:00–18:00 CET</span>
+              <span><b>Next transmission:</b> Vincent Neumann — 02 Aug — 14:00–16:00 CET</span>
+              <span><b>Grid standby:</b> click play for a previous audio broadcast</span>
             </div>
           ))}
         </div>
       </div>
-      <Link className="signal-strip-schedule" href="/grid">Grid ↗</Link>
+      <Link className="signal-strip-schedule" href="/schedule">Schedule ↗</Link>
     </section>
   );
 }
@@ -85,7 +88,15 @@ export function SignalTicker() {
 export function SiteFooter() {
   return (
     <footer className="site-footer">
-      <div className="footer-brand"><strong>ACCU</strong><PixelMark /></div>
+      <div className="footer-brand">
+        <Image
+          className="footer-symbol"
+          src="/accu-symbol-white.png"
+          alt="ACCU symbol"
+          width={3000}
+          height={3000}
+        />
+      </div>
       <p>A connection can unite.</p>
       <nav aria-label="Social media">
         <a href="https://www.instagram.com/radioaccu" target="_blank" rel="noreferrer">Instagram</a>
@@ -99,11 +110,18 @@ export function SiteFooter() {
 
 export function MobileLiveDock() {
   return (
-    <a className="mobile-live-dock" href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">
-      <span className="dock-status"><i /> Live now</span>
-      <strong>Watch & listen</strong>
+    <BroadcastLink className="mobile-live-dock">
+      <span className="dock-status">
+        <i />
+        <span className="when-live">Live now</span>
+        <span className="when-archive">Archive audio</span>
+      </span>
+      <strong>
+        <span className="when-live">Watch & listen</span>
+        <span className="when-archive">Listen now</span>
+      </strong>
       <span aria-hidden="true">↗</span>
-    </a>
+    </BroadcastLink>
   );
 }
 

@@ -3,7 +3,7 @@ export const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@radioaccu";
 
 export const navigation = [
   { number: "01", label: "Transmission", href: "/", key: "home" },
-  { number: "02", label: "Grid", href: "/grid", key: "grid" },
+  { number: "02", label: "Schedule", href: "/schedule", key: "schedule" },
   { number: "03", label: "Archive", href: "/archive", key: "archive" },
   { number: "04", label: "Residents", href: "/residents", key: "residents" },
   { number: "05", label: "GM Series", href: "/gm-series", key: "gm" },
@@ -11,12 +11,49 @@ export const navigation = [
 ] as const;
 
 export const schedule = [
-  { time: "14:00 — 16:00", artist: "Vincent Neumann", status: "Now" },
-  { time: "16:00 — 18:00", artist: "Bashti", status: "Next" },
-  { time: "18:00 — 20:00", artist: "Sohirab", status: "Later" },
-  { time: "20:00 — 22:00", artist: "Aura B2B Isha", status: "Later" },
-  { time: "22:00 — 00:00", artist: "Chlär", status: "Later" },
-  { time: "00:00 — 02:00", artist: "TBA", status: "Later" },
+  {
+    date: "02 Aug 2026",
+    time: "14:00 — 16:00",
+    artist: "Vincent Neumann",
+    status: "Confirmed",
+    startsAt: "2026-08-02T14:00:00+02:00",
+    endsAt: "2026-08-02T16:00:00+02:00",
+  },
+  {
+    date: "09 Aug 2026",
+    time: "14:00 — 16:00",
+    artist: "Bashti",
+    status: "Confirmed",
+    startsAt: "2026-08-09T14:00:00+02:00",
+    endsAt: "2026-08-09T16:00:00+02:00",
+  },
+  {
+    date: "16 Aug 2026",
+    time: "14:00 — 16:00",
+    artist: "Sohirab",
+    status: "Confirmed",
+    startsAt: "2026-08-16T14:00:00+02:00",
+    endsAt: "2026-08-16T16:00:00+02:00",
+  },
+  {
+    date: "23 Aug 2026",
+    time: "14:00 — 16:00",
+    artist: "Aura B2B Isha",
+    status: "Confirmed",
+    startsAt: "2026-08-23T14:00:00+02:00",
+    endsAt: "2026-08-23T16:00:00+02:00",
+  },
+] as const;
+
+export const audioFallbacks = [
+  "https://soundcloud.com/radioaccu/reese-radio-accu-26-july-2026",
+  "https://soundcloud.com/radioaccu/a-dumont-radio-accu-26-july",
+  "https://soundcloud.com/radioaccu/digity-radio-accu-26-july-2026",
+  "https://soundcloud.com/radioaccu/yung-michele-radio-accu-26",
+  "https://soundcloud.com/radioaccu/savan-radio-accu-19-july-2026",
+  "https://soundcloud.com/radioaccu/fatoem4n-radio-accu-19-july",
+  "https://soundcloud.com/radioaccu/hayai-radio-accu-19-july-2026",
+  "https://soundcloud.com/radioaccu/faio-radio-accu-19-july-2026",
 ] as const;
 
 export const videos = [
