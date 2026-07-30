@@ -414,6 +414,17 @@ img { display: block; }
 .upcoming-list time { font-size: 13px; }
 .upcoming-list h3 { margin: 0; font-size: clamp(22px, 2.3vw, 40px); font-weight: 400; text-transform: uppercase; }
 .upcoming-list b { padding: 10px 12px; border: 1px solid var(--line); color: var(--grey); font-size: 9px; font-weight: 400; text-transform: uppercase; }
+.empty-schedule {
+  display: flex;
+  min-height: 260px;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(34px, 5vw, 80px);
+  color: var(--grey);
+  text-transform: uppercase;
+}
+.empty-schedule span { color: var(--acid); font-size: 9px; }
+.empty-schedule strong { max-width: 700px; margin-top: 24px; color: var(--white); font-size: clamp(24px, 3vw, 48px); font-weight: 400; }
 
 .home-system {
   min-height: 570px;
@@ -549,18 +560,31 @@ img { display: block; }
 
 /* Grid page */
 
+.schedule-day { border-bottom: 1px solid var(--line); }
+.schedule-day > header {
+  display: flex;
+  min-height: 94px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px clamp(28px, 4vw, 70px);
+  border-bottom: 1px solid var(--line);
+  background: rgba(185,255,0,.025);
+  text-transform: uppercase;
+}
+.schedule-day > header time { color: var(--acid); font-size: clamp(17px, 1.7vw, 27px); }
+.schedule-day > header span { color: var(--grey); font-size: 9px; }
 .grid-page-schedule article {
   display: grid;
   min-height: 142px;
-  grid-template-columns: 80px 190px 210px minmax(0, 1fr) 110px;
+  grid-template-columns: 80px 210px minmax(0, 1fr) 110px;
   gap: 36px;
   align-items: center;
   padding: 20px clamp(28px, 4vw, 70px);
   border-bottom: 1px solid var(--line);
 }
+.schedule-day article:last-child { border-bottom: 0; }
 .grid-page-schedule article > span { color: var(--grey); font-size: 11px; }
-.grid-page-schedule article > span,
-.grid-page-schedule article > time:first-of-type { color: var(--acid); }
+.grid-page-schedule article > span { color: var(--acid); }
 .grid-page-schedule time { font-size: clamp(15px, 1.4vw, 23px); }
 .grid-page-schedule h2 { margin: 0; font-family: var(--display); font-size: clamp(38px, 4.5vw, 84px); font-weight: 400; line-height: .9; text-transform: uppercase; }
 .grid-page-schedule b { padding: 14px 12px; border: 1px solid var(--line); color: var(--grey); font-size: 10px; font-weight: 400; text-align: center; text-transform: uppercase; }
@@ -588,15 +612,17 @@ img { display: block; }
   border-bottom: 1px solid var(--line);
   background-image:
     linear-gradient(to top, rgba(0,0,0,.78), transparent 48%),
+    var(--resident-image),
     url("/accu-industrial-hero.png");
   background-repeat: no-repeat;
-  background-size: 220% auto;
+  background-size: cover, cover, 220% auto;
+  background-position: center, center, center;
   filter: grayscale(1) contrast(1.15) brightness(.68);
 }
-.crop-a { background-position: 0% center; }
-.crop-b { background-position: 29% center; }
-.crop-c { background-position: 62% center; }
-.crop-d { background-position: 100% center; }
+.crop-a { background-position: center, center, 0% center; }
+.crop-b { background-position: center, center, 29% center; }
+.crop-c { background-position: center, center, 62% center; }
+.crop-d { background-position: center, center, 100% center; }
 .resident-image > span { position: absolute; top: 24px; left: 26px; color: var(--acid); font-size: 11px; }
 .pixel-mark { display: grid; width: 44px; height: 44px; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); transform: rotate(45deg); }
 .pixel-mark i { background: var(--white); transform: scale(.52); }
@@ -669,6 +695,73 @@ img { display: block; }
 .about-grid-status > span { color: var(--grey); font-size: 10px; text-transform: uppercase; }
 .about-grid-status > strong { color: var(--acid); font-size: 15px; text-transform: uppercase; }
 .about-grid-status > a { justify-self: end; color: var(--grey); font-size: 10px; text-transform: uppercase; }
+
+/* Internal archive audio */
+
+.archive-audio {
+  min-height: 690px;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 74% 28%, rgba(185,255,0,.09), transparent 25%),
+    repeating-linear-gradient(90deg, transparent 0 9.9%, rgba(241,241,237,.035) 10%);
+}
+.archive-audio-status {
+  display: flex;
+  min-height: 72px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 clamp(24px, 4vw, 68px);
+  border-bottom: 1px solid var(--line);
+  text-transform: uppercase;
+}
+.archive-audio-status p { margin: 0; color: var(--grey); font-size: 9px; }
+.archive-audio-status span { display: flex; gap: 10px; align-items: center; color: var(--acid); font-size: 9px; }
+.archive-audio-status i { width: 7px; height: 7px; border-radius: 50%; background: var(--acid); box-shadow: 0 0 0 5px rgba(185,255,0,.09); }
+.archive-audio-main {
+  display: grid;
+  min-height: 410px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px;
+  align-items: end;
+  padding: clamp(48px, 7vw, 118px) clamp(24px, 5vw, 84px);
+}
+.archive-audio-main p { margin: 0 0 26px; color: var(--acid); font-size: 9px; text-transform: uppercase; }
+.archive-audio-main h1 {
+  max-width: 1250px;
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(62px, 8vw, 150px);
+  font-weight: 400;
+  line-height: .82;
+  text-transform: uppercase;
+}
+.archive-audio-main button {
+  min-width: 190px;
+  padding: 16px 18px;
+  border: 1px solid var(--acid);
+  background: transparent;
+  color: var(--acid);
+  cursor: pointer;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.archive-audio-main button:hover { background: var(--acid); color: var(--black); }
+.archive-audio-player {
+  padding: 24px clamp(24px, 5vw, 84px) 48px;
+  border-top: 1px solid var(--line);
+}
+.archive-audio-player iframe { display: block; border: 0; }
+.listen-context {
+  display: grid;
+  min-height: 380px;
+  grid-template-columns: .45fr 1fr;
+  padding: clamp(44px, 6vw, 92px);
+  border-bottom: 1px solid var(--line);
+}
+.listen-context > p { margin: 0; color: var(--acid); font-size: 9px; text-transform: uppercase; }
+.listen-context h2 { margin: 0; font-size: clamp(34px, 4vw, 72px); font-weight: 400; line-height: .95; text-transform: uppercase; }
+.listen-context div > p { max-width: 720px; margin: 30px 0; color: var(--grey); font-size: 10px; line-height: 1.8; text-transform: uppercase; }
+.listen-context a { color: var(--acid); font-size: 9px; text-transform: uppercase; }
 
 /* Footer */
 
@@ -795,7 +888,8 @@ img { display: block; }
   .page-intro > div { padding: 45px 20px 60px; }
   .page-intro h1 { margin-top: 45px; font-size: clamp(66px, 17vw, 108px); }
   .page-intro-copy { min-height: 230px; padding: 38px 20px; border-top: 1px solid var(--line); border-left: 0; }
-  .grid-page-schedule article { min-height: 118px; grid-template-columns: 35px 120px 135px 1fr auto; gap: 12px; padding: 18px 20px; }
+  .schedule-day > header { min-height: 78px; padding-inline: 20px; }
+  .grid-page-schedule article { min-height: 118px; grid-template-columns: 35px 135px 1fr auto; gap: 12px; padding: 18px 20px; }
   .grid-page-schedule h2 { font-size: clamp(30px, 7vw, 46px); }
   .grid-page-schedule b { padding: 9px 7px; font-size: 8px; }
   .archive-page-grid { grid-template-columns: 1fr; padding: 20px; }
@@ -816,6 +910,12 @@ img { display: block; }
   .about-values article { border-bottom: 1px solid var(--line); }
   .about-grid-status { grid-template-columns: 1fr; gap: 18px; padding: 42px 20px; }
   .about-grid-status > a { justify-self: start; margin-top: 20px; }
+  .archive-audio { min-height: 0; }
+  .archive-audio-main { min-height: 390px; grid-template-columns: 1fr; align-content: end; padding: 54px 20px; }
+  .archive-audio-main h1 { font-size: clamp(58px, 15vw, 104px); }
+  .archive-audio-main button { justify-self: start; }
+  .archive-audio-player { padding: 20px 20px 38px; }
+  .listen-context { min-height: 0; grid-template-columns: 1fr; gap: 50px; padding: 56px 20px; }
   .site-footer { grid-template-columns: 1fr 1fr; }
   .site-footer > * { min-height: 66px; border-bottom: 1px solid var(--line); }
   .site-footer nav { gap: 16px; }
@@ -874,6 +974,10 @@ img { display: block; }
   .about-values { grid-template-columns: 1fr; }
   .about-values article { border-right: 0; }
   .about-manifesto p { font-size: 28px; }
+  .archive-audio-status { min-height: 62px; padding-inline: 16px; }
+  .archive-audio-status p { max-width: 150px; }
+  .archive-audio-main { padding-inline: 16px; }
+  .archive-audio-player { padding-inline: 16px; }
   .site-footer { grid-template-columns: 1fr; }
   .site-footer > * { border-right: 0; }
 }

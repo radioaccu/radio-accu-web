@@ -10,50 +10,59 @@ export const navigation = [
   { number: "06", label: "About", href: "/about", key: "about" },
 ] as const;
 
-export const schedule = [
+export type ScheduleShow = {
+  date: string;
+  time: string;
+  artist: string;
+  status: string;
+  startsAt: string;
+  endsAt: string;
+};
+
+export const schedule: ScheduleShow[] = [
   {
-    date: "02 Aug 2026",
-    time: "14:00 — 16:00",
-    artist: "Vincent Neumann",
+    date: "02 August 2026",
+    time: "14:00 — 15:00",
+    artist: "Tusais",
     status: "Confirmed",
     startsAt: "2026-08-02T14:00:00+02:00",
+    endsAt: "2026-08-02T15:00:00+02:00",
+  },
+  {
+    date: "02 August 2026",
+    time: "15:00 — 16:00",
+    artist: "Nag",
+    status: "Confirmed",
+    startsAt: "2026-08-02T15:00:00+02:00",
     endsAt: "2026-08-02T16:00:00+02:00",
   },
   {
-    date: "09 Aug 2026",
-    time: "14:00 — 16:00",
-    artist: "Bashti",
+    date: "02 August 2026",
+    time: "16:00 — 17:00",
+    artist: "Toolbox",
     status: "Confirmed",
-    startsAt: "2026-08-09T14:00:00+02:00",
-    endsAt: "2026-08-09T16:00:00+02:00",
+    startsAt: "2026-08-02T16:00:00+02:00",
+    endsAt: "2026-08-02T17:00:00+02:00",
   },
   {
-    date: "16 Aug 2026",
-    time: "14:00 — 16:00",
-    artist: "Sohirab",
+    date: "02 August 2026",
+    time: "17:00 — 18:00",
+    artist: "Mon Tubee",
     status: "Confirmed",
-    startsAt: "2026-08-16T14:00:00+02:00",
-    endsAt: "2026-08-16T16:00:00+02:00",
+    startsAt: "2026-08-02T17:00:00+02:00",
+    endsAt: "2026-08-02T18:00:00+02:00",
   },
-  {
-    date: "23 Aug 2026",
-    time: "14:00 — 16:00",
-    artist: "Aura B2B Isha",
-    status: "Confirmed",
-    startsAt: "2026-08-23T14:00:00+02:00",
-    endsAt: "2026-08-23T16:00:00+02:00",
-  },
-] as const;
+] satisfies ScheduleShow[];
 
 export const audioFallbacks = [
-  "https://soundcloud.com/radioaccu/reese-radio-accu-26-july-2026",
-  "https://soundcloud.com/radioaccu/a-dumont-radio-accu-26-july",
-  "https://soundcloud.com/radioaccu/digity-radio-accu-26-july-2026",
-  "https://soundcloud.com/radioaccu/yung-michele-radio-accu-26",
-  "https://soundcloud.com/radioaccu/savan-radio-accu-19-july-2026",
-  "https://soundcloud.com/radioaccu/fatoem4n-radio-accu-19-july",
-  "https://soundcloud.com/radioaccu/hayai-radio-accu-19-july-2026",
-  "https://soundcloud.com/radioaccu/faio-radio-accu-19-july-2026",
+  { title: "Reese — Radio ACCU · 26 July 2026", url: "https://soundcloud.com/radioaccu/reese-radio-accu-26-july-2026" },
+  { title: "A. Dumont — Radio ACCU · 26 July 2026", url: "https://soundcloud.com/radioaccu/a-dumont-radio-accu-26-july" },
+  { title: "Digity — Radio ACCU · 26 July 2026", url: "https://soundcloud.com/radioaccu/digity-radio-accu-26-july-2026" },
+  { title: "Yung Michele — Radio ACCU · 26 July 2026", url: "https://soundcloud.com/radioaccu/yung-michele-radio-accu-26" },
+  { title: "Savan — Radio ACCU · 19 July 2026", url: "https://soundcloud.com/radioaccu/savan-radio-accu-19-july-2026" },
+  { title: "Fatoem4n — Radio ACCU · 19 July 2026", url: "https://soundcloud.com/radioaccu/fatoem4n-radio-accu-19-july" },
+  { title: "Hayai — Radio ACCU · 19 July 2026", url: "https://soundcloud.com/radioaccu/hayai-radio-accu-19-july-2026" },
+  { title: "FAIO — Radio ACCU · 19 July 2026", url: "https://soundcloud.com/radioaccu/faio-radio-accu-19-july-2026" },
 ] as const;
 
 export const videos = [
@@ -108,10 +117,10 @@ export const videos = [
 ] as const;
 
 export const residents = [
-  { code: "NODE-001", name: "Vincent Neumann", genre: "Electronic / Techno", crop: "crop-a" },
-  { code: "NODE-002", name: "Bashti", genre: "Bass / Leftfield", crop: "crop-b" },
-  { code: "NODE-003", name: "Aura", genre: "House / Electro", crop: "crop-c" },
-  { code: "NODE-004", name: "Sohirab", genre: "Techno / Experimental", crop: "crop-d" },
+  { code: "NODE-001", name: "Vincent Neumann", genre: "Electronic / Techno", crop: "crop-a", dropboxFolder: "/ACCU/Residents/vincent-neumann" },
+  { code: "NODE-002", name: "Bashti", genre: "Bass / Leftfield", crop: "crop-b", dropboxFolder: "/ACCU/Residents/bashti" },
+  { code: "NODE-003", name: "Aura", genre: "House / Electro", crop: "crop-c", dropboxFolder: "/ACCU/Residents/aura" },
+  { code: "NODE-004", name: "Sohirab", genre: "Techno / Experimental", crop: "crop-d", dropboxFolder: "/ACCU/Residents/sohirab" },
 ] as const;
 
 export const guestMixes = [

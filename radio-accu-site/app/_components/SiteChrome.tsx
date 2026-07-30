@@ -1,6 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { navigation } from "../_data/site";
+import {
+  navigation,
+  schedule as fallbackSchedule,
+  type ScheduleShow,
+} from "../_data/site";
 import { BroadcastLink } from "./BroadcastLink";
 
 export type NavigationKey = (typeof navigation)[number]["key"];
@@ -63,7 +67,16 @@ export function SiteHeader({ active }: { active: NavigationKey }) {
   );
 }
 
-export function SignalTicker() {
+export function SignalTicker({ shows = fallbackSchedule }: { shows?: readonly ScheduleShow[] }) {
+  const nextShow = shows[0];
+  const followingShow = shows[1];
+  const firstMessage = nextShow
+    ? `${nextShow.date} — ${nextShow.artist} — ${nextShow.time} CET`
+    : "New transmission dates are being connected";
+  const secondMessage = followingShow
+    ? `${followingShow.artist} follows at ${followingShow.time.split(" — ")[0]} CET`
+    : "Click play for a previous audio broadcast";
+
   return (
     <section className="signal-strip" aria-label="Now playing and coming up">
       <BroadcastLink className="signal-strip-play">
@@ -74,8 +87,8 @@ export function SignalTicker() {
         <div className="signal-strip-track">
           {[0, 1].map((copy) => (
             <div className="signal-strip-group" aria-hidden={copy === 1} key={copy}>
-              <span><b>Next transmission:</b> Vincent Neumann — 02 Aug — 14:00–16:00 CET</span>
-              <span><b>Grid standby:</b> click play for a previous audio broadcast</span>
+              <span><b>Next transmission:</b> {firstMessage}</span>
+              <span><b>Following signal:</b> {secondMessage}</span>
             </div>
           ))}
         </div>

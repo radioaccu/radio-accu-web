@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { PageIntro, PixelMark, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents } from "../_data/site";
 
@@ -14,7 +15,12 @@ export default function ResidentsPage() {
       <section className="residents-grid" aria-label="ACCU residents">
         {residents.map((resident) => (
           <article className="resident-card" key={resident.code}>
-            <div className={`resident-image ${resident.crop}`}>
+            <div
+              className={`resident-image ${resident.crop}`}
+              style={{
+                "--resident-image": `url("/api/resident-image/${resident.dropboxFolder.split("/").at(-1)}/profile.jpg")`,
+              } as CSSProperties}
+            >
               <span>{resident.code}</span>
               <PixelMark />
             </div>

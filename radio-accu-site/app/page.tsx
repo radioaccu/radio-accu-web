@@ -8,13 +8,18 @@ import {
 } from "./_components/SiteChrome";
 import { BroadcastLink } from "./_components/BroadcastLink";
 import { VideoCard } from "./_components/VideoCard";
-import { schedule, videos, YOUTUBE_CHANNEL_URL } from "./_data/site";
+import { videos, YOUTUBE_CHANNEL_URL } from "./_data/site";
+import { getUpcomingSchedule } from "./_lib/schedule";
 
-export default function Home() {
+export default async function Home() {
+  const schedule = await getUpcomingSchedule(4);
+  const nextShow = schedule[0];
+  const followingShow = schedule[1];
+
   return (
     <main className="site-shell">
       <SiteHeader active="home" />
-      <SignalTicker />
+      <SignalTicker shows={schedule} />
 
       <section className="home-live" aria-labelledby="live-title">
         <BroadcastLink className="home-live-visual">
@@ -39,19 +44,27 @@ export default function Home() {
         </BroadcastLink>
 
         <div className="home-live-info">
-          <p className="section-kicker">Next transmission / TX-084</p>
-          <h1 id="live-title">Vincent<br />Neumann</h1>
-          <time>02 Aug 2026 — 14:00 CET</time>
+          <p className="section-kicker">
+            {nextShow ? "Next transmission / TX-084" : "Schedule initializing"}
+          </p>
+          <h1 id="live-title">{nextShow?.artist ?? "New signals incoming"}</h1>
+          <time>
+            {nextShow
+              ? `${nextShow.date} — ${nextShow.time} CET`
+              : "More transmissions will be announced soon"}
+          </time>
           <BroadcastLink className="primary-action">
             <span className="when-live">Watch & listen live</span>
             <span className="when-archive">Listen to a previous broadcast</span>
             <span aria-hidden="true">◉</span>
           </BroadcastLink>
-          <div className="next-signal">
-            <span>Following transmission</span>
-            <strong>Bashti</strong>
-            <time>09 Aug — 14:00</time>
-          </div>
+          {followingShow ? (
+            <div className="next-signal">
+              <span>Following transmission</span>
+              <strong>{followingShow.artist}</strong>
+              <time>{followingShow.date} — {followingShow.time}</time>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -78,15 +91,22 @@ export default function Home() {
           <Link href="/schedule">View complete schedule ↗</Link>
         </header>
         <div className="upcoming-list">
-          {schedule.map((show, index) => (
-            <article key={show.startsAt}>
-              <span>0{index + 1}</span>
-              <time>{show.date}</time>
-              <time>{show.time}</time>
-              <h3>{show.artist}</h3>
-              <b>{show.status}</b>
-            </article>
-          ))}
+          {schedule.length > 0 ? (
+            schedule.map((show, index) => (
+              <article key={`${show.startsAt}-${show.artist}`}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <time>{show.date}</time>
+                <time>{show.time}</time>
+                <h3>{show.artist}</h3>
+                <b>{show.status}</b>
+              </article>
+            ))
+          ) : (
+            <div className="empty-schedule">
+              <span>Schedule initializing</span>
+              <strong>New signals will be announced soon.</strong>
+            </div>
+          )}
         </div>
       </section>
 

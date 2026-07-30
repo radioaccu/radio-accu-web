@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { audioFallbacks, MIXCLOUD_LIVE_URL, schedule } from "../_data/site";
+import { MIXCLOUD_LIVE_URL, type ScheduleShow } from "../_data/site";
+
+async function loadSchedule() {
+  const response = await fetch("/api/schedule", { cache: "no-store" });
+  if (!response.ok) return [];
+  return response.json() as Promise<ScheduleShow[]>;
+}
 
 export function BroadcastLink({
   className,
@@ -14,25 +20,45 @@ export function BroadcastLink({
 }) {
   const [broadcast, setBroadcast] = useState({
     isLive: false,
-    href: audioFallbacks[0] as string,
+    href: "/listen",
   });
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    let cancelled = false;
+    let currentSchedule: ScheduleShow[] = [];
+
+    const updateBroadcastState = () => {
       const now = Date.now();
-      const isLive = schedule.some((show) => (
+      const isLive = currentSchedule.some((show) => (
         now >= new Date(show.startsAt).getTime() &&
         now < new Date(show.endsAt).getTime()
       ));
-      const randomIndex = Math.floor(Math.random() * audioFallbacks.length);
 
-      setBroadcast({
-        isLive,
-        href: isLive ? MIXCLOUD_LIVE_URL : audioFallbacks[randomIndex],
-      });
-    }, 0);
+      if (!cancelled) {
+        setBroadcast({
+          isLive,
+          href: isLive ? MIXCLOUD_LIVE_URL : "/listen",
+        });
+      }
+    };
 
-    return () => window.clearTimeout(timer);
+    const refreshSchedule = async () => {
+      try {
+        currentSchedule = await loadSchedule();
+      } finally {
+        updateBroadcastState();
+      }
+    };
+
+    void refreshSchedule();
+    const stateTimer = window.setInterval(updateBroadcastState, 30_000);
+    const scheduleTimer = window.setInterval(refreshSchedule, 5 * 60_000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(stateTimer);
+      window.clearInterval(scheduleTimer);
+    };
   }, []);
 
   const label = ariaLabel ?? (
@@ -47,8 +73,8 @@ export function BroadcastLink({
       className={className}
       data-broadcast-state={broadcast.isLive ? "live" : "archive"}
       href={broadcast.href}
-      target="_blank"
-      rel="noreferrer"
+      target={broadcast.isLive ? "_blank" : undefined}
+      rel={broadcast.isLive ? "noreferrer" : undefined}
     >
       {children}
     </a>
