@@ -4,6 +4,8 @@ import { schedule as fallbackSchedule, type ScheduleShow } from "../_data/site";
 
 const PUBLIC_STATUSES = new Set(["confirmed", "published", "live"]);
 const BRUSSELS_TIME_ZONE = "Europe/Brussels";
+const DEFAULT_PUBLIC_SCHEDULE_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQjKGlFmftVAMgOerhNBdG2EOvUAADB9nxL2KCChZY0Uo4uBBE9lGrCg3XnpFijV1vfV78PtLvl13-a/pub?gid=1031435176&single=true&output=csv";
 
 function parseCsv(csv: string) {
   const rows: string[][] = [];
@@ -117,6 +119,22 @@ function formatDate(date: string) {
   }).format(new Date(`${date}T12:00:00Z`));
 }
 
+function publicArtistName(value: string) {
+  return value
+    .replace(/^.*\binvites?\s+/i, "")
+    .replace(/^residentie\s*\/\s*/i, "")
+    .trim();
+}
+
+function isPrivateScheduleLabel(value: string) {
+  const normalised = value.trim().toLowerCase();
+  return (
+    normalised.includes("geen uitzending") ||
+    /^(optie|option)\s*:/.test(normalised) ||
+    /^(tba|tbc)$/.test(normalised)
+  );
+}
+
 function rowsToSchedule(csv: string): ScheduleShow[] {
   const rows = parseCsv(csv);
   const [headerRow, ...dataRows] = rows;
@@ -130,10 +148,12 @@ function rowsToSchedule(csv: string): ScheduleShow[] {
     const date = normaliseDate(findCell(row, headers, ["Date", "Datum"]));
     const start = normaliseTime(findCell(row, headers, ["Start", "Start Time", "Starttijd"]));
     const end = normaliseTime(findCell(row, headers, ["End", "End Time", "Eindtijd"]));
-    const artist = findCell(row, headers, ["Artist", "Artiest", "Name", "Naam"]);
+    const sourceArtist = findCell(row, headers, ["Artist", "Artiest", "Name", "Naam"]);
+    const artist = publicArtistName(sourceArtist);
     const status = findCell(row, headers, ["Status"]) || "Confirmed";
 
     if (!date || !start || !end || !artist) return [];
+    if (isPrivateScheduleLabel(sourceArtist)) return [];
     if (!PUBLIC_STATUSES.has(status.toLowerCase())) return [];
 
     const endDate = end <= start ? addDays(date, 1) : date;
@@ -154,8 +174,8 @@ function rowsToSchedule(csv: string): ScheduleShow[] {
 }
 
 export async function getSchedule(): Promise<ScheduleShow[]> {
-  const csvUrl = process.env.GOOGLE_SHEET_SCHEDULE_CSV_URL;
-  if (!csvUrl) return fallbackSchedule;
+  const csvUrl = process.env.GOOGLE_SHEET_SCHEDULE_CSV_URL ||
+    DEFAULT_PUBLIC_SCHEDULE_CSV_URL;
 
   try {
     const response = await fetch(csvUrl, { next: { revalidate: 300 } });

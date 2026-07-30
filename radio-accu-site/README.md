@@ -27,8 +27,9 @@ Only `Confirmed`, `Published` and `Live` rows are public. Every row has its own
 start and end time, so extended broadcasts and extra broadcast dates work
 without code changes.
 
-Publish only the website schedule tab as CSV and add its public URL to
-`.env.local`:
+The current public ACCU schedule CSV is connected in the schedule adapter.
+`GOOGLE_SHEET_SCHEDULE_CSV_URL` can still be used to override that source in
+another environment:
 
 ```text
 GOOGLE_SHEET_SCHEDULE_CSV_URL=https://docs.google.com/spreadsheets/d/.../pub?output=csv
