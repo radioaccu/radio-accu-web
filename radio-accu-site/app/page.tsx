@@ -6,7 +6,7 @@ const navigation = [
   ["01", "Transmission", "#transmission"],
   ["02", "Grid", "#grid"],
   ["03", "Archive", "#archive"],
-  ["04", "Network", "#network"],
+  ["04", "Network", "/network"],
   ["05", "GM Series", "#gm-series"],
   ["06", "About", "#about"],
 ];
@@ -32,13 +32,6 @@ const guestMixes = [
   ["GM-013", "Joanna OJ", "60 min"],
   ["GM-012", "Ecilo", "61 min"],
   ["GM-011", "Skele Tale", "50 min"],
-];
-
-const residents = [
-  ["NODE-001", "Vincent Neumann"],
-  ["NODE-002", "Bashti"],
-  ["NODE-003", "Aura"],
-  ["NODE-004", "Sohirab"],
 ];
 
 function PixelMark({ className = "" }: { className?: string }) {
@@ -146,6 +139,29 @@ export default function Home() {
           ))}
         </nav>
 
+        <section className="signal-strip" aria-label="Now playing and coming up">
+          <a
+            className="signal-strip-play"
+            href={MIXCLOUD_LIVE_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Watch and listen to the live transmission"
+          >
+            <span aria-hidden="true">▶</span>
+          </a>
+          <div className="signal-strip-window">
+            <div className="signal-strip-track">
+              {[0, 1].map((copy) => (
+                <div className="signal-strip-group" aria-hidden={copy === 1} key={copy}>
+                  <span><b>Now transmitting:</b> TX-084 — Vincent Neumann — 14:00–16:00 CET</span>
+                  <span><b>Up next:</b> Bashti — 16:00–18:00 CET</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <a className="signal-strip-schedule" href="#grid">Schedule ↗</a>
+        </section>
+
         <section className="transmission-zone" id="transmission">
           <div className="on-air-panel">
             <p className="label">Now on air</p>
@@ -239,25 +255,6 @@ export default function Home() {
             ))}
             <a className="all-gm" href="#gm-series">View GM series <b>↗</b></a>
           </div>
-        </div>
-      </section>
-
-      <section className="network module-box" id="network">
-        <header className="module-heading"><h2>Network <span>[ View all ]</span></h2></header>
-        <div className="resident-grid">
-          {residents.map(([code, name]) => (
-            <article key={code}>
-              <strong>{code}</strong>
-              <PixelMark />
-              <p>{name}</p>
-              <small>Resident</small>
-            </article>
-          ))}
-          <article className="node-count">
-            <strong>08</strong>
-            <p>Active<br />nodes</p>
-            <span className="mini-eq" aria-hidden="true">▂▄▆█▆▄▂</span>
-          </article>
         </div>
       </section>
 

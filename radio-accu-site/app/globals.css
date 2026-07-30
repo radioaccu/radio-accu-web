@@ -17,6 +17,7 @@ html { background: var(--black); scroll-behavior: smooth; }
 
 body {
   margin: 0;
+  overflow-x: hidden;
   background: var(--black);
   color: var(--white);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", "Courier New", monospace;
@@ -33,6 +34,7 @@ button { color: inherit; font: inherit; }
   min-height: calc(100vh - 24px);
   grid-template-columns: 390px minmax(0, 1fr);
   margin: 12px auto;
+  overflow: hidden;
   border: 1px solid var(--line);
   background:
     radial-gradient(circle at 72% 18%, rgba(185,255,0,.018), transparent 24%),
@@ -122,7 +124,7 @@ button { color: inherit; font: inherit; }
   clip-path: polygon(0 50%, 5% 42%, 9% 53%, 13% 35%, 17% 58%, 22% 48%, 28% 55%, 35% 29%, 42% 57%, 49% 47%, 58% 59%, 66% 41%, 73% 54%, 82% 30%, 88% 49%, 94% 42%, 100% 50%, 100% 58%, 0 58%);
 }
 
-.workspace { min-width: 0; }
+.workspace { min-width: 0; overflow: hidden; }
 
 .top-status {
   display: grid;
@@ -151,7 +153,7 @@ button { color: inherit; font: inherit; }
 .main-nav {
   display: grid;
   min-height: 80px;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   border-bottom: 1px solid var(--line);
 }
 
@@ -161,10 +163,60 @@ button { color: inherit; font: inherit; }
 .main-nav a.active small, .main-nav a.active strong { color: var(--acid); }
 .main-nav a.active::after { position: absolute; right: 22px; bottom: 4px; left: 22px; height: 3px; background: var(--acid); content: ""; }
 
+.signal-strip {
+  display: grid;
+  min-width: 0;
+  min-height: 58px;
+  grid-template-columns: 58px minmax(0, 1fr) 132px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+}
+
+.signal-strip-play,
+.signal-strip-schedule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgba(3,4,3,.55);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.signal-strip-play span { font-size: 18px; transform: translateX(1px); }
+.signal-strip-schedule { border-right: 0; border-left: 1px solid rgba(3,4,3,.55); font-size: 10px; }
+.signal-strip-window { min-width: 0; overflow: hidden; }
+.signal-strip-track {
+  display: flex;
+  width: max-content;
+  min-height: 58px;
+  align-items: center;
+  animation: signal-ticker 26s linear infinite;
+  will-change: transform;
+}
+.signal-strip-group { display: flex; flex: 0 0 auto; align-items: center; }
+.signal-strip-group span {
+  display: block;
+  padding: 0 40px;
+  border-right: 1px solid rgba(3,4,3,.28);
+  font-size: 14px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+.signal-strip-group b { margin-right: 8px; font-weight: 800; }
+.signal-strip:hover .signal-strip-track { animation-play-state: paused; }
+
+@keyframes signal-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 .transmission-zone {
   display: grid;
+  min-width: 0;
   min-height: 560px;
-  grid-template-columns: 310px minmax(400px, 1.25fr) minmax(430px, 1fr);
+  grid-template-columns: minmax(260px, 310px) minmax(0, 1.25fr) minmax(370px, .9fr);
 }
 
 .on-air-panel,
@@ -202,15 +254,16 @@ button { color: inherit; font: inherit; }
 .hero-image-meta strong { font-size: 13px; text-transform: uppercase; }
 .hero-image-meta time { color: var(--grey); font-size: 9px; }
 
-.schedule-panel { padding: 36px 28px; }
+.schedule-panel { min-width: 0; overflow: hidden; padding: 36px 28px; }
 .schedule-panel header,
 .module-heading { display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+.schedule-panel header { min-width: 0; gap: 18px; }
 .schedule-title,
 .schedule-meta { display: flex; flex-direction: column; }
-.schedule-title { gap: 7px; }
+.schedule-title { min-width: 0; gap: 7px; }
 .schedule-title > span { color: var(--acid); font-size: 8px; letter-spacing: .08em; }
 .schedule-title > strong { font-size: 17px; font-weight: 400; letter-spacing: .02em; }
-.schedule-meta { gap: 7px; align-items: flex-end; }
+.schedule-meta { flex: 0 0 auto; gap: 7px; align-items: flex-end; }
 .schedule-meta > span { color: var(--grey); font-size: 8px; }
 .schedule-panel header a { color: var(--grey); font-size: 8px; }
 .schedule-list { margin-top: 28px; border-top: 1px solid var(--line); }
@@ -238,14 +291,13 @@ button { color: inherit; font: inherit; }
 .os-frame { grid-template-areas:
   "identity workspace"
   "history historygm"
-  "network lower"
+  "lower lower"
   "footer footer";
 }
 .identity-panel { grid-area: identity; }
 .workspace { grid-area: workspace; }
 .signal-history { grid-area: history; }
 .latest-gm { grid-area: historygm; }
-.network { grid-area: network; }
 .activations { grid-area: lower; width: 38%; }
 .connection-portal { grid-area: lower; width: 34%; margin-left: 38%; }
 .system-overview { grid-area: lower; width: 28%; margin-left: 72%; border-right: 0; }
@@ -297,6 +349,107 @@ button { color: inherit; font: inherit; }
 .node-count p { margin-top: 7px; font-size: 12px; line-height: 1.15; }
 .mini-eq { display: block; margin-top: 18px; font-size: 20px; }
 
+/* Residents page */
+
+.network-page {
+  width: calc(100% - 24px);
+  max-width: 1920px;
+  min-height: calc(100vh - 24px);
+  margin: 12px auto;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--black);
+}
+
+.network-page-header {
+  display: grid;
+  min-height: 92px;
+  grid-template-columns: 240px 1fr auto;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.network-page-header > * {
+  display: flex;
+  min-height: 92px;
+  align-items: center;
+  padding: 0 28px;
+  border-right: 1px solid var(--line);
+}
+
+.network-page-header > a:first-child { justify-content: center; }
+.network-page-header img { width: 145px; height: auto; }
+.network-page-header > div { flex-direction: column; justify-content: center; align-items: flex-start; }
+.network-page-header span { color: var(--acid); font-size: 8px; text-transform: uppercase; }
+.network-page-header strong { margin-top: 8px; font-size: 14px; font-weight: 400; text-transform: uppercase; }
+.network-back-link { min-width: 210px; justify-content: center; border-right: 0; font-size: 9px; text-transform: uppercase; }
+
+.network-page-intro {
+  display: grid;
+  min-height: 440px;
+  grid-template-columns: 1.35fr .65fr;
+  border-bottom: 1px solid var(--line);
+}
+
+.network-page-intro > div { padding: 52px; }
+.network-page-intro > div + div { border-left: 1px solid var(--line); }
+.network-page-intro p { color: var(--grey); text-transform: uppercase; }
+.network-page-intro > div > p { margin: 0; font-size: 10px; }
+.network-page-intro h1 {
+  margin: 42px 0 0;
+  font-family: var(--display);
+  font-size: clamp(82px, 10vw, 176px);
+  font-weight: 400;
+  line-height: .78;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+}
+.network-page-status { display: flex; flex-direction: column; justify-content: center; }
+.network-page-status strong { margin-top: 16px; font-size: 18px; font-weight: 400; text-transform: uppercase; }
+.network-page-status > div { margin-top: 25px; color: var(--acid); font-size: clamp(24px, 3vw, 46px); letter-spacing: .06em; }
+.network-page-status p { max-width: 440px; margin-top: 35px; font-size: 10px; line-height: 1.7; }
+
+.network-page-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.network-resident-card { min-width: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.network-resident-card:nth-child(2n) { border-right: 0; }
+.network-resident-image {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background-image:
+    linear-gradient(to top, rgba(0,0,0,.8), transparent 48%),
+    url("/accu-industrial-hero.png");
+  background-repeat: no-repeat;
+  background-size: 220% auto;
+  filter: grayscale(1) contrast(1.15) brightness(.7);
+}
+.network-resident-image > span { position: absolute; top: 24px; left: 26px; color: var(--acid); font-size: 11px; }
+.network-resident-image .pixel-mark { position: absolute; right: 28px; bottom: 26px; width: 54px; height: 54px; }
+.network-resident-info {
+  position: relative;
+  display: grid;
+  min-height: 116px;
+  grid-template-columns: 1.1fr .9fr 34px;
+  gap: 28px;
+  align-items: center;
+  padding: 20px 26px;
+}
+.network-resident-info span { color: var(--grey); font-size: 8px; text-transform: uppercase; }
+.network-resident-info h2 { margin: 8px 0 0; font-size: 23px; font-weight: 400; text-transform: uppercase; }
+.network-resident-info p { margin: 8px 0 0; font-size: 10px; text-transform: uppercase; }
+.network-resident-info b { justify-self: end; font-size: 18px; font-weight: 400; }
+
+.network-page-connect { padding: 90px 52px; border-bottom: 1px solid var(--line); }
+.network-page-connect p { margin: 0; color: var(--acid); font-size: 9px; text-transform: uppercase; }
+.network-page-connect h2 { max-width: 1100px; margin: 28px 0 45px; font-size: clamp(38px, 5vw, 88px); font-weight: 400; line-height: .98; letter-spacing: -.045em; text-transform: uppercase; }
+.network-page-connect a { display: inline-block; padding: 15px 18px; border: 1px solid var(--acid); color: var(--acid); font-size: 10px; text-transform: uppercase; }
+.network-page-footer { display: grid; min-height: 78px; grid-template-columns: 180px 1fr 250px; align-items: center; }
+.network-page-footer > * { display: flex; min-height: 78px; align-items: center; padding: 0 24px; border-right: 1px solid var(--line); }
+.network-page-footer strong { font-family: var(--display); font-size: 38px; }
+.network-page-footer span { color: var(--acid); font-size: 10px; text-transform: uppercase; }
+.network-page-footer small { border-right: 0; color: var(--grey); font-size: 8px; text-transform: uppercase; }
+
 .activation-list,
 .overview-list { border: 1px solid var(--line); }
 .activation-list a,
@@ -342,6 +495,14 @@ button { color: inherit; font: inherit; }
   .schedule-row:nth-child(odd) { border-right: 1px solid var(--line); }
   .site-footer { grid-template-columns: 160px 1fr 230px 180px; }
   .footer-orbit { display: none; }
+}
+
+@media (max-width: 1100px) {
+  .network-page-header { grid-template-columns: 190px 1fr auto; }
+  .network-page-intro { grid-template-columns: 1fr; }
+  .network-page-intro > div + div { border-top: 1px solid var(--line); border-left: 0; }
+  .network-page-grid { grid-template-columns: 1fr; }
+  .network-resident-card { border-right: 0; }
 }
 
 @media (max-width: 900px) {
@@ -419,6 +580,13 @@ button { color: inherit; font: inherit; }
   .main-nav small { font-size: 6px; }
   .main-nav strong { margin-top: 3px; font-size: 18px; }
   .main-nav a.active::after { right: 18px; bottom: 0; left: 18px; height: 2px; }
+  .signal-strip {
+    min-height: 50px;
+    grid-template-columns: 48px minmax(0, 1fr) 92px;
+  }
+  .signal-strip-track { min-height: 50px; animation-duration: 20s; }
+  .signal-strip-group span { padding: 0 24px; font-size: 11px; }
+  .signal-strip-schedule { font-size: 8px; }
   .transmission-zone { grid-template-columns: 1fr; }
   .on-air-panel {
     min-height: 485px;
@@ -447,7 +615,6 @@ button { color: inherit; font: inherit; }
   .schedule-row { grid-template-columns: 142px 1fr auto; min-height: 68px; }
   .signal-history,
   .latest-gm,
-  .network,
   .activations,
   .connection-portal,
   .system-overview {
@@ -514,6 +681,23 @@ button { color: inherit; font: inherit; }
   .dock-status { display: flex; gap: 8px; align-items: center; font-size: 8px; }
   .dock-status i { background: var(--black); box-shadow: none; }
   .mobile-live-dock strong { font-size: 10px; }
+  .network-page { width: 100%; margin: 0; border: 0; }
+  .network-page-header { grid-template-columns: 130px 1fr; }
+  .network-page-header > * { min-height: 72px; padding: 0 16px; }
+  .network-page-header > a:first-child { min-height: 72px; }
+  .network-page-header img { width: 96px; }
+  .network-page-header > div { border-right: 0; }
+  .network-back-link { grid-column: 1 / -1; min-width: 0; min-height: 48px; border-top: 1px solid var(--line); border-right: 0; }
+  .network-page-intro { min-height: 0; }
+  .network-page-intro > div { padding: 42px 20px; }
+  .network-page-intro h1 { margin-top: 30px; font-size: clamp(56px, 18vw, 76px); line-height: .82; }
+  .network-page-status strong { font-size: 15px; }
+  .network-resident-image { min-height: 74vw; }
+  .network-resident-info { grid-template-columns: 1fr; gap: 18px; padding: 20px; }
+  .network-resident-info b { position: absolute; right: 20px; }
+  .network-page-connect { padding: 65px 20px; }
+  .network-page-footer { grid-template-columns: 1fr; }
+  .network-page-footer > * { min-height: 54px; border-right: 0; border-bottom: 1px solid var(--line); }
 }
 
 @media (max-width: 560px) {
@@ -526,7 +710,6 @@ button { color: inherit; font: inherit; }
   .schedule-panel,
   .signal-history,
   .latest-gm,
-  .network,
   .activations,
   .connection-portal,
   .system-overview { padding-right: 16px; padding-left: 16px; }
@@ -535,4 +718,10 @@ button { color: inherit; font: inherit; }
   .node-count { grid-column: 1 / -1; }
   .site-footer { grid-template-columns: 1fr; }
   .site-footer > * { min-height: 54px; border-right: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .signal-strip-track { animation: none; }
+  .signal-strip-window { overflow-x: auto; }
 }
