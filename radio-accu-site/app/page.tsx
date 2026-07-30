@@ -64,8 +64,14 @@ export default function Home() {
     <main className="os-frame">
       <header className="mobile-header">
         <a className="mobile-brand" href="#transmission" aria-label="ACCU home">
-          <strong>ACCU</strong>
-          <PixelMark />
+          <Image
+            className="mobile-chrome-logo"
+            src="/accu-chrome-logo.png"
+            alt="ACCU"
+            width={5000}
+            height={3333}
+            priority
+          />
         </a>
         <a className="mobile-status" href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">
           <i />
@@ -76,9 +82,14 @@ export default function Home() {
 
       <aside className="identity-panel">
         <div className="brand-line">
-          <span className="registered">R</span>
-          <strong className="wordmark">ACCU</strong>
-          <PixelMark className="brand-pixel" />
+          <Image
+            className="chrome-wordmark"
+            src="/accu-chrome-logo.png"
+            alt="ACCU"
+            width={5000}
+            height={3333}
+            priority
+          />
         </div>
 
         <div className="identity-copy">

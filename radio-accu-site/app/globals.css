@@ -50,28 +50,21 @@ button { color: inherit; font: inherit; }
   border-bottom: 1px solid var(--line);
 }
 
-.brand-line { position: relative; display: flex; align-items: flex-start; }
-
-.wordmark {
-  font-family: var(--display);
-  font-size: clamp(118px, 12.4vw, 196px);
-  font-weight: 900;
-  line-height: .74;
-  letter-spacing: -.065em;
-}
-
-.registered {
+.brand-line {
+  position: relative;
   display: grid;
-  width: 23px;
-  height: 23px;
-  margin: 2px 4px 0 0;
+  height: 122px;
   place-items: center;
-  border: 1px solid var(--white);
-  border-radius: 50%;
-  font-size: 12px;
+  overflow: hidden;
 }
 
-.brand-pixel { margin: 5px 0 0 16px; }
+.chrome-wordmark {
+  width: min(100%, 286px);
+  height: auto;
+  filter:
+    contrast(1.08)
+    drop-shadow(0 9px 24px rgba(255,255,255,.08));
+}
 
 .pixel-mark {
   display: grid;
@@ -335,8 +328,8 @@ button { color: inherit; font: inherit; }
 
 @media (max-width: 1400px) {
   .os-frame { grid-template-columns: 310px minmax(0, 1fr); }
-  .wordmark { font-size: 128px; }
-  .brand-pixel { display: none; }
+  .brand-line { height: 105px; }
+  .chrome-wordmark { width: min(100%, 232px); }
   .transmission-zone { grid-template-columns: 270px 1fr; }
   .schedule-panel { grid-column: 1 / -1; border-top: 1px solid var(--line); }
   .schedule-list { display: grid; grid-template-columns: 1fr 1fr; }
@@ -361,19 +354,19 @@ button { color: inherit; font: inherit; }
     backdrop-filter: blur(16px);
   }
   .mobile-brand {
-    display: flex;
-    gap: 13px;
-    align-items: center;
-    padding: 0 17px;
+    position: relative;
+    display: grid;
+    height: 61px;
+    width: 136px;
+    place-items: center;
+    overflow: hidden;
+    padding: 0 12px;
   }
-  .mobile-brand strong {
-    font-family: var(--display);
-    font-size: 38px;
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: -.04em;
+  .mobile-chrome-logo {
+    width: 122px;
+    height: auto;
+    filter: contrast(1.08);
   }
-  .mobile-brand .pixel-mark { width: 23px; height: 23px; }
   .mobile-status {
     display: flex;
     gap: 7px;
