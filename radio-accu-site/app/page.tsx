@@ -2,38 +2,58 @@ import Image from "next/image";
 
 const MIXCLOUD_LIVE_URL = "https://www.mixcloud.com/live/radioaccu";
 
-const upcoming = [
-  { code: "TX-026", date: "02 AUG", time: "14:00", artist: "ACCU Radio Show" },
-  { code: "TX-027", date: "09 AUG", time: "14:00", artist: "Sunday Transmission" },
-  { code: "TX-028", date: "16 AUG", time: "14:00", artist: "Resident Session" },
-  { code: "TX-029", date: "23 AUG", time: "14:00", artist: "Guest Operator" },
-  { code: "TX-030", date: "30 AUG", time: "14:00", artist: "Closing Current" },
+const navigation = [
+  ["01", "Transmission", "#transmission"],
+  ["02", "Grid", "#grid"],
+  ["03", "Archive", "#archive"],
+  ["04", "Network", "#network"],
+  ["05", "GM Series", "#gm-series"],
+  ["06", "About", "#about"],
+];
+
+const schedule = [
+  ["14:00 — 16:00", "Vincent Neumann", "Now"],
+  ["16:00 — 18:00", "Bashti", "Next"],
+  ["18:00 — 20:00", "Sohirab", "Later"],
+  ["20:00 — 22:00", "Aura B2B Isha", "Later"],
+  ["22:00 — 00:00", "Chlär", "Later"],
+  ["00:00 — 02:00", "TBA", "Later"],
 ];
 
 const archive = [
-  { code: "ARC-023", title: "Sunday Transmission", meta: "Video · 118 min" },
-  { code: "ARC-022", title: "Limburg Frequency", meta: "Video · 94 min" },
-  { code: "ARC-021", title: "Resident Output", meta: "Video · 121 min" },
+  ["ARC-023", "Vincent Neumann", "58 min", "crop-a"],
+  ["ARC-022", "Bashti", "1:02:14", "crop-b"],
+  ["ARC-021", "Sohirab", "59:33", "crop-c"],
+  ["ARC-020", "Aura B2B Isha", "1:00:21", "crop-d"],
+  ["ARC-019", "Chlär", "57:08", "crop-e"],
 ];
 
 const guestMixes = [
-  { code: "GM-001", artist: "Incoming Signal", meta: "60 min · Belgium" },
-  { code: "GM-002", artist: "Incoming Signal", meta: "60 min · Europe" },
-  { code: "GM-003", artist: "Incoming Signal", meta: "60 min · Worldwide" },
+  ["GM-013", "Joanna OJ", "60 min"],
+  ["GM-012", "Ecilo", "61 min"],
+  ["GM-011", "Skele Tale", "50 min"],
 ];
 
-const network = [
-  { code: "NODE-001", role: "Resident", status: "Active" },
-  { code: "NODE-002", role: "Resident", status: "Active" },
-  { code: "NODE-003", role: "Collaborator", status: "Connected" },
-  { code: "NODE-004", role: "Visual Operator", status: "Connected" },
+const residents = [
+  ["NODE-001", "Vincent Neumann"],
+  ["NODE-002", "Bashti"],
+  ["NODE-003", "Aura"],
+  ["NODE-004", "Sohirab"],
 ];
 
-function PixelBars({ compact = false }: { compact?: boolean }) {
+function PixelMark({ className = "" }: { className?: string }) {
   return (
-    <span className={compact ? "pixel-bars compact" : "pixel-bars"} aria-hidden="true">
-      {Array.from({ length: compact ? 8 : 12 }, (_, index) => (
-        <i key={index} />
+    <span className={`pixel-mark ${className}`} aria-hidden="true">
+      {Array.from({ length: 9 }, (_, index) => <i key={index} />)}
+    </span>
+  );
+}
+
+function ChargeBar() {
+  return (
+    <span className="charge-bar" aria-label="Grid charge 78 percent">
+      {Array.from({ length: 14 }, (_, index) => (
+        <i className={index < 11 ? "charged" : ""} key={index} />
       ))}
     </span>
   );
@@ -41,231 +61,219 @@ function PixelBars({ compact = false }: { compact?: boolean }) {
 
 export default function Home() {
   return (
-    <main id="top">
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="ACCU home">
-          <Image src="/accu-chrome-logo.png" alt="ACCU" width={152} height={76} priority />
-        </a>
+    <main className="os-frame">
+      <aside className="identity-panel">
+        <div className="brand-line">
+          <span className="registered">R</span>
+          <strong className="wordmark">ACCU</strong>
+          <PixelMark className="brand-pixel" />
+        </div>
 
-        <nav className="desktop-nav" aria-label="Main navigation">
-          <a href="#live">Live</a>
-          <a href="#upcoming">Grid</a>
-          <a href="#archive">Archive</a>
-          <a href="#gm-series">GM Series</a>
-          <a href="#network">Network</a>
-          <a href="#about">About</a>
+        <div className="identity-copy">
+          <p>A connection can unite.</p>
+          <p>Independent community radio.<br />An operating system for independent culture.</p>
+        </div>
+
+        <div className="sidebar-module grid-status">
+          <p className="label">Grid status</p>
+          <ChargeBar />
+          <strong>Connected</strong>
+        </div>
+
+        <div className="sidebar-module diagnostics">
+          <div>
+            <span>Node</span>
+            <strong>004</strong>
+          </div>
+          <div>
+            <span>Latency</span>
+            <strong>21 ms</strong>
+          </div>
+          <div className="diagnostic-output">
+            <span>Output</span>
+            <strong>Mixcloud Live</strong>
+          </div>
+        </div>
+
+        <div className="sidebar-module frequency">
+          <span>Frequency</span>
+          <strong>Online 24/7</strong>
+          <span className="frequency-line" aria-hidden="true" />
+        </div>
+      </aside>
+
+      <div className="workspace">
+        <header className="top-status">
+          <div className="top-spacer" />
+          <div><span>Node</span><strong>004</strong></div>
+          <div><span>Latency</span><strong>21 ms</strong></div>
+          <div><span>Output</span><strong>Mixcloud Live</strong></div>
+          <div><span>Time</span><strong>14:27:09 CET</strong></div>
+          <button className="menu-button" type="button" aria-label="Open menu">
+            <span>Menu</span><b>☰</b>
+          </button>
+        </header>
+
+        <nav className="main-nav" aria-label="Main navigation">
+          {navigation.map(([number, label, href], index) => (
+            <a className={index === 0 ? "active" : ""} href={href} key={number}>
+              <small>[{number}]</small>
+              <strong>{label}</strong>
+            </a>
+          ))}
         </nav>
 
-        <a className="header-cta" href="mailto:info@radioaccu.com">
-          Connect <span aria-hidden="true">↗</span>
-        </a>
-      </header>
-
-      <section className="system-bar" aria-label="Grid status">
-        <div>
-          <span className="status-light" aria-hidden="true" />
-          <span>Grid online</span>
-        </div>
-        <PixelBars />
-        <div className="system-copy">
-          <span>Connected</span>
-          <span>Hasselt / BE</span>
-          <span>Node 001</span>
-        </div>
-      </section>
-
-      <section className="live-section" id="live">
-        <div className="live-copy">
-          <p className="module-label">01 / Live transmission</p>
-          <div>
-            <p className="eyebrow">Current output / Mixcloud Pro</p>
-            <h1>
-              Sunday
-              <br />
-              Transmission
-            </h1>
+        <section className="transmission-zone" id="transmission">
+          <div className="on-air-panel">
+            <p className="label">Now on air</p>
+            <strong className="tx-code">TX-084</strong>
+            <h1>Vincent Neumann</h1>
+            <time>14:00 — 16:00 CET</time>
+            <a className="live-button" href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">
+              Watch & listen live <span aria-hidden="true">◉</span>
+            </a>
+            <a className="secondary-button" href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">
+              View on Mixcloud <span aria-hidden="true">↗</span>
+            </a>
+            <p className="studio-status"><i /> Live from ACCU studio</p>
           </div>
 
-          <div className="live-meta">
-            <p>
-              <span>Operator</span>
-              ACCU Radio Show
-            </p>
-            <p>
-              <span>Window</span>
-              Sunday · 14:00—18:00 CET
-            </p>
-            <p>
-              <span>Origin</span>
-              Limburg, Belgium
-            </p>
+          <div className="hero-image">
+            <Image
+              src="/accu-industrial-hero.png"
+              alt="Industrial architecture in Limburg"
+              fill
+              priority
+              sizes="(max-width: 900px) 100vw, 38vw"
+            />
+            <div className="hero-image-meta">
+              <div><span>Next</span><strong>Bashti</strong><time>16:00 — 18:00</time></div>
+              <div><span>Later</span><strong>Sohirab</strong><time>18:00 — 20:00</time></div>
+            </div>
           </div>
 
-          <a
-            className="primary-action"
-            href={MIXCLOUD_LIVE_URL}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span className="play-glyph" aria-hidden="true">▶</span>
-            Watch on Mixcloud Live
-            <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-
-        <div className="live-visual" aria-label="Temporary live transmission visual">
-          <div className="visual-grid" aria-hidden="true" />
-          <div className="signal-orbit" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
-          <Image
-            src="/accu-symbol-white.png"
-            alt=""
-            className="visual-symbol"
-            width={500}
-            height={500}
-            priority
-          />
-          <div className="visual-readout">
-            <span>Signal stable</span>
-            <strong>98%</strong>
-          </div>
-          <p className="visual-note">Image source pending / architecture + environment</p>
-        </div>
-      </section>
-
-      <section className="section upcoming-section" id="upcoming">
-        <header className="section-title">
-          <p className="module-label">02 / Transmission grid</p>
-          <h2>Upcoming</h2>
-          <p className="section-note">The next five confirmed signals.</p>
-        </header>
-
-        <div className="upcoming-list">
-          {upcoming.map((show, index) => (
-            <article className="upcoming-row" key={show.code}>
-              <span className="row-index">{String(index + 1).padStart(2, "0")}</span>
-              <time>
-                <strong>{show.date}</strong>
-                <span>{show.time} CET</span>
-              </time>
-              <h3>{show.artist}</h3>
-              <span className="code">{show.code}</span>
-              <span className="row-arrow" aria-hidden="true">↗</span>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section archive-section" id="archive">
-        <header className="section-title inline-title">
-          <div>
-            <p className="module-label">03 / Signal history</p>
-            <h2>Video Archive</h2>
-          </div>
-          <a href="#archive">View full archive <span aria-hidden="true">→</span></a>
-        </header>
-
-        <div className="archive-grid">
-          {archive.map((item, index) => (
-            <article className="archive-card" key={item.code}>
-              <div className={`media-placeholder media-${index + 1}`}>
-                <span className="corner-code">{item.code}</span>
-                <PixelBars compact />
-                <button aria-label={`Play ${item.title}`} type="button">▶</button>
-              </div>
-              <div className="card-meta">
-                <div>
-                  <p>{item.code}</p>
-                  <h3>{item.title}</h3>
+          <div className="schedule-panel" id="grid">
+            <header>
+              <span>Transmission grid</span>
+              <a href="#grid">View full grid ↗</a>
+            </header>
+            <div className="schedule-list">
+              {schedule.map(([time, artist, status]) => (
+                <div className={status === "Now" ? "schedule-row current" : "schedule-row"} key={time}>
+                  <time>{time}</time>
+                  <strong>{artist}</strong>
+                  <span>{status}</span>
                 </div>
-                <span>{item.meta}</span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section gm-section" id="gm-series">
-        <header className="section-title">
-          <p className="module-label">04 / Invitation-only output</p>
-          <h2>GM Series</h2>
-          <p className="section-note">Sixty-minute signals from invited artists and producers.</p>
-        </header>
-
-        <div className="gm-grid">
-          {guestMixes.map((mix, index) => (
-            <article className="gm-card" key={mix.code}>
-              <div className="gm-number">
-                <span>GM /</span>
-                <strong>{mix.code.slice(-3)}</strong>
-              </div>
-              <div className={`gm-art gm-art-${index + 1}`} aria-hidden="true">
-                <div className="pixel-field" />
-              </div>
-              <div className="gm-info">
-                <h3>{mix.artist}</h3>
-                <p>{mix.meta}</p>
-                <span>Awaiting connection ↗</span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section network-section" id="network">
-        <header className="section-title network-title">
-          <p className="module-label">05 / Connected operators</p>
-          <h2>Network</h2>
-          <div className="network-status">
-            <PixelBars />
-            <span>04 nodes online</span>
+              ))}
+            </div>
           </div>
-        </header>
+        </section>
+      </div>
 
-        <div className="network-grid">
-          {network.map((node, index) => (
-            <article className="node-card" key={node.code}>
-              <span className="node-index">{String(index + 1).padStart(2, "0")}</span>
-              <div className="node-portrait" aria-label="Temporary resident image">
-                <span>Image pending</span>
+      <section className="signal-history module-box" id="archive">
+        <header className="module-heading">
+          <h2>Signal history <span>[ Video archive — YouTube ]</span></h2>
+          <a href="#archive">↗</a>
+        </header>
+        <div className="archive-cards">
+          {archive.map(([code, artist, duration, crop]) => (
+            <article className="archive-card" key={code}>
+              <div className={`archive-image ${crop}`}>
+                <span>{code}</span>
               </div>
               <div>
-                <p>{node.code}</p>
-                <h3>{node.role}</h3>
+                <strong>{artist}</strong>
+                <p>{duration}</p>
+                <button type="button" aria-label={`Play ${artist}`}>▷</button>
               </div>
-              <span className="node-status"><i /> {node.status}</span>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="about-section" id="about">
-        <p className="module-label">06 / System overview</p>
-        <div>
-          <h2>A connection can unite.</h2>
-          <p>
-            ACCU is an independent community radio platform connecting electronic
-            music, local culture and emerging voices from Limburg and beyond.
-          </p>
-          <a href="mailto:info@radioaccu.com">info@radioaccu.com <span aria-hidden="true">↗</span></a>
+      <section className="latest-gm module-box" id="gm-series">
+        <header className="module-heading">
+          <h2>Latest GM <span>[ View all ]</span></h2>
+        </header>
+        <div className="gm-content">
+          <article className="featured-gm">
+            <strong>GM-014</strong>
+            <div className="gm-image crop-b" />
+            <footer><span>Philou Louzolo</span><span>60 min · Belgium</span><b>▷</b></footer>
+          </article>
+          <div className="gm-list">
+            {guestMixes.map(([code, artist, duration]) => (
+              <a href="#gm-series" key={code}>
+                <span><strong>{code}</strong>{artist}<small>{duration}</small></span>
+                <b>↘</b>
+              </a>
+            ))}
+            <a className="all-gm" href="#gm-series">View GM series <b>↗</b></a>
+          </div>
+        </div>
+      </section>
+
+      <section className="network module-box" id="network">
+        <header className="module-heading"><h2>Network <span>[ View all ]</span></h2></header>
+        <div className="resident-grid">
+          {residents.map(([code, name]) => (
+            <article key={code}>
+              <strong>{code}</strong>
+              <PixelMark />
+              <p>{name}</p>
+              <small>Resident</small>
+            </article>
+          ))}
+          <article className="node-count">
+            <strong>08</strong>
+            <p>Active<br />nodes</p>
+            <span className="mini-eq" aria-hidden="true">▂▄▆█▆▄▂</span>
+          </article>
+        </div>
+      </section>
+
+      <section className="activations module-box">
+        <header className="module-heading"><h2>Activations <span>[ View all ]</span></h2></header>
+        <div className="activation-list">
+          <a href="#"><time>24.05.25</time><span>ACCU × Hazelt<small>Industrial day & night</small></span><b>↗</b></a>
+          <a href="#"><time>07.06.25</time><span>Open call<small>Visuals & photography</small></span><b>↗</b></a>
+          <a href="#"><time>21.06.25</time><span>ACCU outdoor<small>Secret location</small></span><b>↗</b></a>
+        </div>
+      </section>
+
+      <section className="connection-portal module-box">
+        <header className="module-heading"><h2>Connection portal</h2></header>
+        <div className="portal-content">
+          <div>
+            <h3>Want to connect<br />with ACCU?</h3>
+            <p>Submit your show, project or collaboration proposal.</p>
+            <a href="mailto:info@radioaccu.com">Submit →</a>
+          </div>
+          <span className="wire-globe" aria-hidden="true" />
+        </div>
+      </section>
+
+      <section className="system-overview module-box" id="about">
+        <header className="module-heading"><h2>System overview</h2></header>
+        <div className="overview-list">
+          <a href="#about"><span>About ACCU</span><small>Read more</small><b>→</b></a>
+          <a href="#about"><span>Partners</span><small>View all</small><b>→</b></a>
+          <a href="#about"><span>FAQ</span><small>View all</small><b>→</b></a>
+          <a href="mailto:info@radioaccu.com"><span>Contact</span><small>Get in touch</small><b>→</b></a>
         </div>
       </section>
 
       <footer className="site-footer">
-        <div>
-          <Image src="/accu-chrome-logo.png" alt="ACCU" width={144} height={72} />
-          <p>Independent community radio from Limburg, Belgium.</p>
-        </div>
-        <div className="footer-links">
-          <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
-          <a href="https://soundcloud.com/" target="_blank" rel="noreferrer">SoundCloud</a>
-          <a href="https://www.youtube.com/" target="_blank" rel="noreferrer">YouTube</a>
-          <a href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">Mixcloud</a>
-        </div>
-        <p className="footer-code">GRID / ACCU / 2026</p>
+        <div className="footer-brand"><strong>ACCU</strong><PixelMark /></div>
+        <p>A connection can unite.</p>
+        <nav aria-label="Social media">
+          <a href="#" aria-label="Instagram">◎</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="SoundCloud">▰</a>
+          <a href={MIXCLOUD_LIVE_URL}>M—XC</a>
+        </nav>
+        <small>© 2026 ACCU<br />All rights reserved</small>
+        <span className="footer-orbit" aria-hidden="true" />
       </footer>
     </main>
   );
