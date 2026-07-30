@@ -62,6 +62,18 @@ function ChargeBar() {
 export default function Home() {
   return (
     <main className="os-frame">
+      <header className="mobile-header">
+        <a className="mobile-brand" href="#transmission" aria-label="ACCU home">
+          <strong>ACCU</strong>
+          <PixelMark />
+        </a>
+        <a className="mobile-status" href={MIXCLOUD_LIVE_URL} target="_blank" rel="noreferrer">
+          <i />
+          <span>Live signal</span>
+        </a>
+        <button type="button" aria-label="Open menu">☰</button>
+      </header>
+
       <aside className="identity-panel">
         <div className="brand-line">
           <span className="registered">R</span>
@@ -275,6 +287,17 @@ export default function Home() {
         <small>© 2026 ACCU<br />All rights reserved</small>
         <span className="footer-orbit" aria-hidden="true" />
       </footer>
+
+      <a
+        className="mobile-live-dock"
+        href={MIXCLOUD_LIVE_URL}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <span className="dock-status"><i /> Live now</span>
+        <strong>Watch & listen</strong>
+        <span aria-hidden="true">↗</span>
+      </a>
     </main>
   );
 }
