@@ -570,6 +570,35 @@ img { display: block; }
 
 /* Grid page */
 
+.schedule-month { border-bottom: 1px solid var(--line); }
+.schedule-month > header {
+  display: flex;
+  min-height: 150px;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 30px;
+  padding: 32px clamp(28px, 4vw, 70px);
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(90deg, rgba(185,255,0,.055), transparent 42%),
+    var(--panel);
+  text-transform: uppercase;
+}
+.schedule-month > header h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(48px, 6vw, 110px);
+  font-weight: 400;
+  line-height: .9;
+}
+.schedule-month > header span {
+  padding-bottom: 7px;
+  color: var(--grey);
+  font-size: 9px;
+  text-align: right;
+}
+.schedule-month:last-child,
+.schedule-month .schedule-day:last-child { border-bottom: 0; }
 .schedule-day { border-bottom: 1px solid var(--line); }
 .schedule-day > header {
   display: flex;
@@ -1087,6 +1116,12 @@ img { display: block; }
     font-size: 10px;
     line-height: 1.9;
   }
+  .schedule-month > header {
+    min-height: 112px;
+    align-items: flex-end;
+    padding: 26px 20px;
+  }
+  .schedule-month > header h2 { font-size: clamp(44px, 11vw, 72px); }
   .schedule-day > header { min-height: 78px; padding-inline: 20px; }
   .grid-page-schedule article { min-height: 118px; grid-template-columns: 35px 135px 1fr auto; gap: 12px; padding: 18px 20px; }
   .grid-page-schedule h2 { font-size: clamp(30px, 7vw, 46px); }
@@ -1172,6 +1207,14 @@ img { display: block; }
   .upcoming-list h3 { grid-column: 2; }
   .upcoming-list b { grid-column: 3; grid-row: 1 / span 3; }
   .system-manifesto { min-height: 560px; }
+  .schedule-month > header {
+    min-height: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-block: 28px;
+  }
+  .schedule-month > header span { padding-bottom: 0; text-align: left; }
   .grid-page-schedule article { grid-template-columns: 28px 1fr auto; }
   .grid-page-schedule time { grid-column: 2; }
   .grid-page-schedule h2 { grid-column: 2; }

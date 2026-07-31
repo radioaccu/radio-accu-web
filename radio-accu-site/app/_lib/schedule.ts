@@ -48,6 +48,16 @@ function normaliseHeader(value: string) {
   return value.trim().toLowerCase().replace(/[\s_-]+/g, "");
 }
 
+function normaliseHeaderRow(row: string[]) {
+  const populatedCells = row.filter(Boolean);
+
+  if (populatedCells.length === 1 && populatedCells[0].includes("|")) {
+    return populatedCells[0].split("|").map((header) => header.trim());
+  }
+
+  return row;
+}
+
 function findCell(
   row: string[],
   headers: Map<string, number>,
@@ -120,10 +130,12 @@ function formatDate(date: string) {
 }
 
 function publicArtistName(value: string) {
-  return value
-    .replace(/^.*\binvites?\s+/i, "")
-    .replace(/^residentie\s*\/\s*/i, "")
+  const cleaned = value
+    .replace(/^.*\binvites?\s*(?:[/:–—-]\s*)?/i, "")
+    .replace(/^residentie(?:\s*\/\s*|\s+)/i, "")
     .trim();
+
+  return cleaned || value.trim();
 }
 
 function isPrivateScheduleLabel(value: string) {
@@ -137,8 +149,9 @@ function isPrivateScheduleLabel(value: string) {
 
 function rowsToSchedule(csv: string): ScheduleShow[] {
   const rows = parseCsv(csv);
-  const [headerRow, ...dataRows] = rows;
-  if (!headerRow) return [];
+  const [sourceHeaderRow, ...dataRows] = rows;
+  if (!sourceHeaderRow) return [];
+  const headerRow = normaliseHeaderRow(sourceHeaderRow);
 
   const headers = new Map(
     headerRow.map((header, index) => [normaliseHeader(header), index]),
