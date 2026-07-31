@@ -7,6 +7,7 @@ type DropboxTokenResponse = {
 
 type DropboxEntry = {
   ".tag": "file" | "folder";
+  id?: string;
   name: string;
   path_display: string;
   path_lower: string;
@@ -105,6 +106,9 @@ async function callDropboxApi<T>(endpoint: string, payload: object) {
 }
 
 async function listDropboxEntries(path: string) {
+  const sharedLink = process.env.DROPBOX_RESIDENTS_SHARED_LINK?.trim();
+  if (sharedLink) return listSharedDropboxEntries(path, sharedLink);
+
   const entries: DropboxEntry[] = [];
   let page = await callDropboxApi<DropboxListResponse>("files/list_folder", {
     path,
@@ -119,6 +123,43 @@ async function listDropboxEntries(path: string) {
     page = await callDropboxApi<DropboxListResponse>("files/list_folder/continue", {
       cursor: page.cursor,
     });
+  }
+
+  return entries;
+}
+
+async function listSharedDropboxEntries(root: string, sharedLink: string) {
+  const entries: DropboxEntry[] = [];
+  const pendingFolders = [""];
+
+  while (pendingFolders.length > 0) {
+    const relativeFolder = pendingFolders.shift() ?? "";
+    let page = await callDropboxApi<DropboxListResponse>("files/list_folder", {
+      path: relativeFolder,
+      recursive: false,
+      limit: 2000,
+      shared_link: { url: sharedLink },
+    });
+
+    while (page) {
+      for (const entry of page.entries ?? []) {
+        const relativePath = `${relativeFolder}/${entry.name}`.replace(/\/{2,}/g, "/");
+        const pathDisplay = `${root}${relativePath}`;
+        const normalizedEntry = {
+          ...entry,
+          path_display: pathDisplay,
+          path_lower: pathDisplay.toLowerCase(),
+        };
+
+        entries.push(normalizedEntry);
+        if (entry[".tag"] === "folder") pendingFolders.push(relativePath);
+      }
+
+      if (!page.has_more || !page.cursor) break;
+      page = await callDropboxApi<DropboxListResponse>("files/list_folder/continue", {
+        cursor: page.cursor,
+      });
+    }
   }
 
   return entries;
@@ -375,7 +416,12 @@ export async function downloadDropboxFile(path: string, range?: string | null) {
   const accessToken = await getDropboxAccessToken();
   if (!accessToken) return null;
 
-  const dropboxArgument = JSON.stringify({ path }).replace(
+  const sharedEntry = process.env.DROPBOX_RESIDENTS_SHARED_LINK
+    ? residentCache?.entries.find((entry) => entry.path_display === path)
+    : null;
+  const downloadPath = sharedEntry?.id ?? path;
+
+  const dropboxArgument = JSON.stringify({ path: downloadPath }).replace(
     /[\u007f-\uffff]/g,
     (character) => `\\u${character.charCodeAt(0).toString(16).padStart(4, "0")}`,
   );
