@@ -664,12 +664,12 @@ img { display: block; }
     url("/accu-industrial-hero.png");
   background-repeat: no-repeat;
   background-size: cover, cover, 220% auto;
-  background-position: center, center, center;
+  background-position: center, var(--resident-focus, center), center;
 }
-.crop-a { background-position: center, center, 0% center; }
-.crop-b { background-position: center, center, 29% center; }
-.crop-c { background-position: center, center, 62% center; }
-.crop-d { background-position: center, center, 100% center; }
+.crop-a { background-position: center, var(--resident-focus, center), 0% center; }
+.crop-b { background-position: center, var(--resident-focus, center), 29% center; }
+.crop-c { background-position: center, var(--resident-focus, center), 62% center; }
+.crop-d { background-position: center, var(--resident-focus, center), 100% center; }
 .resident-image > span { position: absolute; top: 24px; left: 26px; color: var(--acid); font-size: 11px; }
 .pixel-mark { display: grid; width: 44px; height: 44px; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); transform: rotate(45deg); }
 .pixel-mark i { background: var(--white); transform: scale(.52); }
@@ -707,7 +707,10 @@ img { display: block; }
   border-right: 1px solid var(--line);
   background: var(--panel);
 }
-.resident-profile-visual > img { object-fit: cover; }
+.resident-profile-visual > img {
+  object-fit: cover;
+  object-position: var(--resident-focus, center);
+}
 .resident-profile-visual > span {
   position: absolute;
   bottom: 24px;

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageIntro, SiteFooter, SiteHeader } from "../../_components/SiteChrome";
 import { getDropboxResidentDetail } from "../../_lib/dropbox";
+import { getResidentImagePosition } from "../../_lib/resident-visuals";
 
 type ResidentPageProps = {
   params: Promise<{ slug: string }>;
@@ -42,7 +44,12 @@ export default async function ResidentPage({ params }: ResidentPageProps) {
       />
 
       <section className="resident-profile">
-        <div className="resident-profile-visual">
+        <div
+          className="resident-profile-visual"
+          style={{
+            "--resident-focus": getResidentImagePosition(resident.slug),
+          } as CSSProperties}
+        >
           {leadPhoto ? (
             <Image
               alt={`${resident.name} press image`}

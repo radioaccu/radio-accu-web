@@ -128,11 +128,18 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+const preferredResidentImages: Record<string, RegExp> = {
+  maraschino: /^Maraschino .* 02\.jpe?g$/i,
+  savan: /^IMG_4117\.jpe?g$/i,
+};
+
 function imageScore(entry: DropboxEntry, residentFolder: string) {
   const name = entry.name.toLowerCase();
   const relativePath = entry.path_display.slice(residentFolder.length + 1);
+  const residentSlug = slugify(residentFolder.split("/").at(-1) ?? "");
   let score = relativePath.includes("/") ? 0 : 12;
 
+  if (preferredResidentImages[residentSlug]?.test(entry.name)) score += 1000;
   if (/(press|profile|portrait|headshot|photo|pic)/.test(name)) score += 25;
   if (/\.(jpg|jpeg)$/i.test(name)) score += 5;
   if (/(logo|gig|poster|flyer|artwork)/.test(name)) score -= 30;

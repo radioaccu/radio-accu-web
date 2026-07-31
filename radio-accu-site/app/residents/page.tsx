@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageIntro, PixelMark, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents as fallbackResidents } from "../_data/site";
 import { getDropboxResidents } from "../_lib/dropbox";
+import { getResidentImagePosition } from "../_lib/resident-visuals";
 
 export default async function ResidentsPage() {
   const dropboxResidents = await getDropboxResidents();
@@ -34,7 +35,8 @@ export default async function ResidentsPage() {
             <div
               className={`resident-image crop-${["a", "b", "c", "d"][index % 4]}`}
               style={{
-                "--resident-image": `url("/api/resident-image/${resident.slug}")`,
+                "--resident-image": `url("/api/resident-image/${resident.slug}?v=2")`,
+                "--resident-focus": getResidentImagePosition(resident.slug),
               } as CSSProperties}
             >
               <span>NODE-{String(index + 1).padStart(3, "0")}</span>
