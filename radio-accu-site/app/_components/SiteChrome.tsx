@@ -110,13 +110,25 @@ export function SiteFooter() {
           height={3000}
         />
       </div>
-      <p>A connection can unite.</p>
-      <nav aria-label="Social media">
-        <a href="https://www.instagram.com/radioaccu" target="_blank" rel="noreferrer">Instagram</a>
-        <a href="https://www.youtube.com/@radioaccu" target="_blank" rel="noreferrer">YouTube</a>
-        <a href="https://soundcloud.com/radioaccu" target="_blank" rel="noreferrer">SoundCloud</a>
+      <div className="footer-statement">
+        <span>Radio ACCU</span>
+        <p>A connection can unite.</p>
+      </div>
+      <nav className="footer-socials" aria-label="Social media and audio platforms">
+        <span>Follow / listen</span>
+        <div>
+          <a href="https://www.instagram.com/radioaccu" target="_blank" rel="noreferrer">Instagram ↗</a>
+          <a href="https://soundcloud.com/radioaccu" target="_blank" rel="noreferrer">SoundCloud ↗</a>
+          <a href="https://www.youtube.com/@radioaccu" target="_blank" rel="noreferrer">YouTube ↗</a>
+          <a href="https://www.mixcloud.com/radioaccu/" target="_blank" rel="noreferrer">Mixcloud ↗</a>
+        </div>
       </nav>
-      <small>© 2026 ACCU<br />Limburg, Belgium</small>
+      <address className="footer-address">
+        <span>Broadcast address</span>
+        <strong>Bootstraat 9</strong>
+        <small>3500 Hasselt, Belgium</small>
+        <small>© 2026 ACCU</small>
+      </address>
     </footer>
   );
 }
