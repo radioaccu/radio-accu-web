@@ -31,10 +31,16 @@ export type DropboxResidentAsset = {
   path: string;
 };
 
+export type DropboxResidentLink = {
+  href: string;
+  label: string;
+};
+
 export type DropboxResidentDetail = DropboxResident & {
   bio: string | null;
   documents: DropboxResidentAsset[];
   photos: DropboxResidentAsset[];
+  socialLinks: DropboxResidentLink[];
   videos: DropboxResidentAsset[];
 };
 
@@ -53,33 +59,32 @@ export function isDropboxConfigured() {
 }
 
 async function getDropboxAccessToken() {
-  if (process.env.DROPBOX_ACCESS_TOKEN) {
-    return process.env.DROPBOX_ACCESS_TOKEN;
-  }
-
   const appKey = process.env.DROPBOX_APP_KEY;
   const appSecret = process.env.DROPBOX_APP_SECRET;
   const refreshToken = process.env.DROPBOX_REFRESH_TOKEN;
 
-  if (!appKey || !appSecret || !refreshToken) return null;
+  if (appKey && appSecret && refreshToken) {
+    const body = new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: appKey,
+      client_secret: appSecret,
+    });
 
-  const body = new URLSearchParams({
-    grant_type: "refresh_token",
-    refresh_token: refreshToken,
-    client_id: appKey,
-    client_secret: appSecret,
-  });
+    const response = await fetch("https://api.dropboxapi.com/oauth2/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+      cache: "no-store",
+    });
 
-  const response = await fetch("https://api.dropboxapi.com/oauth2/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-    cache: "no-store",
-  });
+    if (response.ok) {
+      const payload = await response.json() as DropboxTokenResponse;
+      if (payload.access_token) return payload.access_token;
+    }
+  }
 
-  if (!response.ok) return null;
-  const payload = await response.json() as DropboxTokenResponse;
-  return payload.access_token ?? null;
+  return process.env.DROPBOX_ACCESS_TOKEN ?? null;
 }
 
 async function callDropboxApi<T>(endpoint: string, payload: object) {
@@ -223,27 +228,89 @@ function decodeXmlEntities(value: string) {
     .replace(/&apos;/g, "'");
 }
 
+const socialLinkOrder = [
+  "Instagram",
+  "SoundCloud",
+  "Mixcloud",
+  "YouTube",
+  "Spotify",
+  "Bandcamp",
+  "Website",
+];
+
+function residentLinkLabel(href: string) {
+  const hostname = new URL(href).hostname.replace(/^www\./, "").toLowerCase();
+
+  if (hostname.includes("instagram.com")) return "Instagram";
+  if (hostname.includes("soundcloud.com")) return "SoundCloud";
+  if (hostname.includes("mixcloud.com")) return "Mixcloud";
+  if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) return "YouTube";
+  if (hostname.includes("spotify.com")) return "Spotify";
+  if (hostname.includes("bandcamp.com")) return "Bandcamp";
+  return "Website";
+}
+
+function extractResidentLinks(...sources: string[]) {
+  const candidates = sources.flatMap((source) => (
+    source.match(/(?:https?:\/\/|www\.)[^\s<>"']+/gi) ?? []
+  ));
+  const links = new Map<string, DropboxResidentLink>();
+
+  for (const candidate of candidates) {
+    const cleaned = decodeXmlEntities(candidate)
+      .replace(/[),.;\]}]+$/g, "")
+      .replace(/^www\./i, "https://www.");
+
+    try {
+      const url = new URL(cleaned);
+      if (!/^https?:$/.test(url.protocol)) continue;
+      const href = url.toString();
+      links.set(href, { href, label: residentLinkLabel(href) });
+    } catch {
+      // Ignore incomplete links in biography documents.
+    }
+  }
+
+  return Array.from(links.values()).sort((first, second) => (
+    socialLinkOrder.indexOf(first.label) - socialLinkOrder.indexOf(second.label)
+  ));
+}
+
 async function readResidentBio(entries: DropboxEntry[]) {
   const bioFile = entries.find((entry) => (
     entry[".tag"] === "file" &&
     /(^|\/|[\s_-])bio([\s_.-]|$)/i.test(entry.path_display) &&
     /\.(docx|txt|md)$/i.test(entry.name)
   ));
-  if (!bioFile) return null;
+  if (!bioFile) return { bio: null, socialLinks: [] };
 
   const response = await downloadDropboxFile(bioFile.path_display);
-  if (!response?.ok) return null;
+  if (!response?.ok) return { bio: null, socialLinks: [] };
 
   if (/\.(txt|md)$/i.test(bioFile.name)) {
-    return (await response.text()).trim() || null;
+    const bio = (await response.text()).trim();
+    return {
+      bio: bio || null,
+      socialLinks: extractResidentLinks(bio),
+    };
   }
 
   try {
     const archive = unzipSync(new Uint8Array(await response.arrayBuffer()));
     const documentXml = archive["word/document.xml"];
-    if (!documentXml) return null;
+    if (!documentXml) return { bio: null, socialLinks: [] };
 
-    const bio = strFromU8(documentXml)
+    const rawDocumentXml = strFromU8(documentXml);
+    const relationshipXml = archive["word/_rels/document.xml.rels"];
+    const rawRelationshipXml = relationshipXml ? strFromU8(relationshipXml) : "";
+    const externalTargets = (rawRelationshipXml.match(/<Relationship\b[^>]*>/g) ?? [])
+      .flatMap((relationship) => {
+        if (!/TargetMode="External"/i.test(relationship)) return [];
+        const target = relationship.match(/Target="([^"]+)"/i)?.[1];
+        return target ? [target] : [];
+      });
+
+    const bio = rawDocumentXml
       .replace(/<w:tab\b[^>]*\/>/g, "\t")
       .replace(/<w:br\b[^>]*\/>/g, "\n")
       .replace(/<\/w:p>/g, "\n\n")
@@ -253,9 +320,12 @@ async function readResidentBio(entries: DropboxEntry[]) {
       .filter(Boolean)
       .join("\n\n");
 
-    return bio || null;
+    return {
+      bio: bio || null,
+      socialLinks: extractResidentLinks(bio, ...externalTargets),
+    };
   } catch {
-    return null;
+    return { bio: null, socialLinks: [] };
   }
 }
 
@@ -281,12 +351,14 @@ export async function getDropboxResidentDetail(slug: string) {
   const photos = buildAssets(files, /\.(jpg|jpeg|png|webp)$/i, "image");
   const videos = buildAssets(files, /\.(mp4|mov|m4v|webm)$/i, "video");
   const documents = buildAssets(files, /\.(pdf|docx|txt|md)$/i, "document");
+  const residentContent = await readResidentBio(files);
 
   return {
     ...resident,
-    bio: await readResidentBio(files),
+    bio: residentContent.bio,
     documents,
     photos,
+    socialLinks: residentContent.socialLinks,
     videos,
   } satisfies DropboxResidentDetail;
 }

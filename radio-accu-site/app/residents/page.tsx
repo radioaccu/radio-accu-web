@@ -21,7 +21,7 @@ export default async function ResidentsPage() {
       <PageIntro
         eyebrow="Module 04 / Residents"
         title="Residents"
-        description="The recurring voices shaping the station’s sound, archive and community. Each resident is a node in the wider ACCU network."
+        description="The recurring voices shaping the station’s sound, archive and community. Open a resident profile for their biography, official channels and listening links."
       />
 
       <section className="residents-grid" aria-label="ACCU residents">

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageIntro, SiteFooter, SiteHeader } from "../../_components/SiteChrome";
+import { residents as fallbackResidents } from "../../_data/site";
 import { getDropboxResidentDetail } from "../../_lib/dropbox";
 import { getResidentImagePosition } from "../../_lib/resident-visuals";
 
@@ -27,7 +28,21 @@ export async function generateMetadata({
 
 export default async function ResidentPage({ params }: ResidentPageProps) {
   const { slug } = await params;
-  const resident = await getDropboxResidentDetail(slug);
+  const dropboxResident = await getDropboxResidentDetail(slug);
+  const fallbackResident = fallbackResidents.find((candidate) => (
+    candidate.dropboxFolder.split("/").pop() === slug
+  ));
+  const resident = dropboxResident ?? (fallbackResident ? {
+    ...fallbackResident,
+    bio: null,
+    documents: [],
+    folderPath: "",
+    imagePath: null,
+    photos: [],
+    slug,
+    socialLinks: [],
+    videos: [],
+  } : null);
   if (!resident) notFound();
 
   const leadPhoto = resident.photos.find((photo) => (
@@ -38,9 +53,9 @@ export default async function ResidentPage({ params }: ResidentPageProps) {
     <main className="site-shell">
       <SiteHeader active="residents" />
       <PageIntro
-        eyebrow="Module 04 / Resident node"
+        eyebrow="Module 04 / Resident"
         title={resident.name}
-        description={`${resident.photos.length} images · ${resident.videos.length} videos · connected through the Radio ACCU resident network.`}
+        description="Resident profile, biography and official listening and social channels."
       />
 
       <section className="resident-profile">
@@ -62,72 +77,31 @@ export default async function ResidentPage({ params }: ResidentPageProps) {
           ) : (
             <div className="resident-profile-placeholder" aria-hidden="true" />
           )}
-          <span>NODE / {resident.name}</span>
         </div>
 
         <article className="resident-biography">
           <p>Resident biography</p>
-          <h2>{resident.bio ? "About this node" : "Bio incoming"}</h2>
+          <h2>{resident.bio ? `About ${resident.name}` : "Bio incoming"}</h2>
           <div className="resident-bio-copy">
             {resident.bio || "No written biography is connected to this Dropbox folder yet."}
+          </div>
+          <div className="resident-profile-links">
+            <p>Listen / follow</p>
+            {resident.socialLinks.length > 0 ? (
+              <div>
+                {resident.socialLinks.map((link) => (
+                  <a href={link.href} key={link.href} target="_blank" rel="noreferrer">
+                    {link.label} ↗
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <span>Official links incoming</span>
+            )}
           </div>
           <Link href="/residents">← All residents</Link>
         </article>
       </section>
-
-      {resident.photos.length > 0 && (
-        <section className="resident-media-section">
-          <header>
-            <p>Resident image bank</p>
-            <span>{String(resident.photos.length).padStart(2, "0")} photographs</span>
-          </header>
-          <div className="resident-photo-grid">
-            {resident.photos.map((photo, index) => (
-              <figure className={index % 5 === 0 ? "wide" : ""} key={photo.id}>
-                <Image
-                  alt={`${resident.name} — ${photo.name}`}
-                  fill
-                  quality={92}
-                  sizes={index % 5 === 0
-                    ? "(max-width: 800px) 100vw, 66vw"
-                    : "(max-width: 800px) 100vw, 33vw"}
-                  src={`/api/resident-media/${resident.slug}/${photo.id}`}
-                />
-                <figcaption>{photo.name}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {resident.videos.length > 0 && (
-        <section className="resident-media-section">
-          <header>
-            <p>Resident motion archive</p>
-            <span>{String(resident.videos.length).padStart(2, "0")} videos</span>
-          </header>
-          <div className="resident-video-grid">
-            {resident.videos.map((video) => (
-              <article key={video.id}>
-                <video
-                  controls
-                  playsInline
-                  preload="none"
-                  src={`/api/resident-media/${resident.slug}/${video.id}`}
-                />
-                <p>{video.name}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {resident.photos.length === 0 && resident.videos.length === 0 && (
-        <section className="page-cta resident-empty-state">
-          <p>Media bank</p>
-          <h2>This resident folder is connected and ready for new assets.</h2>
-        </section>
-      )}
 
       <SiteFooter />
     </main>
