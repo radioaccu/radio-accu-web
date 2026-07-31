@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { PageIntro, PixelMark, SiteFooter, SiteHeader } from "../_components/SiteChrome";
+import { PageIntro, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents as fallbackResidents } from "../_data/site";
 import { getDropboxResidents } from "../_lib/dropbox";
 import { getResidentImagePosition } from "../_lib/resident-visuals";
@@ -38,10 +38,7 @@ export default async function ResidentsPage() {
                 "--resident-image": `url("/api/resident-image/${resident.slug}?v=2")`,
                 "--resident-focus": getResidentImagePosition(resident.slug),
               } as CSSProperties}
-            >
-              <span>NODE-{String(index + 1).padStart(3, "0")}</span>
-              <PixelMark />
-            </div>
+            />
             <div className="resident-info">
               <div><span>Resident</span><h2>{resident.name}</h2></div>
               <div>

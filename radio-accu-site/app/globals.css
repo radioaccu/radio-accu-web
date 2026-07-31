@@ -670,11 +670,9 @@ img { display: block; }
 .crop-b { background-position: center, var(--resident-focus, center), 29% center; }
 .crop-c { background-position: center, var(--resident-focus, center), 62% center; }
 .crop-d { background-position: center, var(--resident-focus, center), 100% center; }
-.resident-image > span { position: absolute; top: 24px; left: 26px; color: var(--acid); font-size: 11px; }
 .pixel-mark { display: grid; width: 44px; height: 44px; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); transform: rotate(45deg); }
 .pixel-mark i { background: var(--white); transform: scale(.52); }
 .pixel-mark i:nth-child(1), .pixel-mark i:nth-child(3), .pixel-mark i:nth-child(5), .pixel-mark i:nth-child(7), .pixel-mark i:nth-child(9) { opacity: 0; }
-.resident-image .pixel-mark { position: absolute; right: 28px; bottom: 26px; width: 58px; height: 58px; }
 .resident-info {
   display: grid;
   min-height: 125px;
