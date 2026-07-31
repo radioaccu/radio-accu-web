@@ -29,31 +29,16 @@ export function ChargeBar() {
 
 export function SiteHeader({ active }: { active: NavigationKey }) {
   return (
-    <>
-      <header className="site-header">
-        <Link className="site-logo" href="/" aria-label="ACCU home">
-          <Image
-            src="/accu-chrome-logo-trimmed.png"
-            alt="ACCU"
-            width={3953}
-            height={1533}
-            priority
-          />
-        </Link>
-
-        <div className="site-readouts" aria-label="System status">
-          <div><span>Node</span><strong>004</strong></div>
-          <div><span>Latency</span><strong>21 ms</strong></div>
-          <div><span>Output</span><strong>Mixcloud Live</strong></div>
-          <div><span>Status</span><strong>Grid online</strong></div>
-        </div>
-
-        <BroadcastLink className="header-live">
-          <i />
-          <span className="when-live">Live</span>
-          <span className="when-archive">Listen</span>
-        </BroadcastLink>
-      </header>
+    <header className="site-header">
+      <Link className="site-logo" href="/" aria-label="ACCU home">
+        <Image
+          src="/accu-chrome-logo-trimmed.png"
+          alt="ACCU"
+          width={3953}
+          height={1533}
+          priority
+        />
+      </Link>
 
       <nav className="site-nav" aria-label="Main navigation">
         {navigation.map((item) => (
@@ -63,7 +48,13 @@ export function SiteHeader({ active }: { active: NavigationKey }) {
           </Link>
         ))}
       </nav>
-    </>
+
+      <BroadcastLink className="header-live">
+        <i />
+        <span className="when-live">Live</span>
+        <span className="when-archive">Listen</span>
+      </BroadcastLink>
+    </header>
   );
 }
 
