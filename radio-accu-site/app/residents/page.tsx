@@ -20,7 +20,7 @@ export default async function ResidentsPage() {
       <SiteHeader active="residents" />
       <PageIntro
         eyebrow="Module 04 / Residents"
-        title="Connected residents"
+        title="Residents"
         description="The recurring voices shaping the station’s sound, archive and community. Each resident is a node in the wider ACCU network."
       />
 

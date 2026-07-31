@@ -303,12 +303,13 @@ img { display: block; }
 }
 
 .home-live-info h1 {
-  margin: 42px 0 12px;
+  margin: 42px 0 20px;
   font-family: var(--display);
   font-size: clamp(68px, 7.2vw, 142px);
   font-weight: 400;
-  line-height: .76;
+  line-height: .86;
   letter-spacing: -.02em;
+  text-wrap: balance;
   text-transform: uppercase;
 }
 
@@ -356,7 +357,8 @@ img { display: block; }
   font-family: var(--display);
   font-size: clamp(44px, 5vw, 92px);
   font-weight: 400;
-  line-height: .86;
+  line-height: .92;
+  text-wrap: balance;
   text-transform: uppercase;
 }
 .section-heading > a { color: var(--grey); font-size: 9px; text-transform: uppercase; }
@@ -442,7 +444,8 @@ img { display: block; }
   font-family: var(--display);
   font-size: clamp(58px, 6.3vw, 116px);
   font-weight: 400;
-  line-height: .82;
+  line-height: .9;
+  text-wrap: balance;
   text-transform: uppercase;
 }
 .system-manifesto div > p:not(.section-kicker) {
@@ -522,31 +525,38 @@ img { display: block; }
 
 .page-intro {
   display: grid;
-  min-height: 460px;
-  grid-template-columns: 1.35fr .65fr;
+  min-height: 520px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr);
   border-bottom: 1px solid var(--line);
 }
-.page-intro > div { padding: clamp(44px, 5vw, 80px); }
+.page-intro > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(58px, 7vw, 120px);
+  padding: clamp(44px, 5vw, 80px);
+}
 .page-intro > div > p { margin: 0; color: var(--acid); font-size: 9px; text-transform: uppercase; }
 .page-intro h1 {
   max-width: 1250px;
-  margin: 60px 0 0;
+  margin: 0;
   font-family: var(--display);
-  font-size: clamp(72px, 9.6vw, 182px);
+  font-size: clamp(66px, 8.3vw, 158px);
   font-weight: 400;
-  line-height: .76;
-  letter-spacing: -.02em;
+  line-height: .9;
+  letter-spacing: -.01em;
+  text-wrap: balance;
   text-transform: uppercase;
 }
 .page-intro-copy {
-  display: flex;
+  display: grid;
   margin: 0;
-  align-items: flex-end;
-  padding: clamp(38px, 5vw, 74px);
+  align-content: end;
+  padding: clamp(38px, 4vw, 64px);
   border-left: 1px solid var(--line);
   color: var(--grey);
-  font-size: 11px;
-  line-height: 1.75;
+  font-size: clamp(11px, .85vw, 14px);
+  line-height: 1.85;
   text-transform: uppercase;
 }
 
@@ -740,7 +750,8 @@ img { display: block; }
   font-family: var(--display);
   font-size: clamp(58px, 6vw, 108px);
   font-weight: 400;
-  line-height: .85;
+  line-height: .92;
+  text-wrap: balance;
   text-transform: uppercase;
 }
 .resident-bio-copy {
@@ -902,7 +913,8 @@ img { display: block; }
   font-family: var(--display);
   font-size: clamp(62px, 8vw, 150px);
   font-weight: 400;
-  line-height: .82;
+  line-height: .9;
+  text-wrap: balance;
   text-transform: uppercase;
 }
 .archive-audio-main button {
@@ -1061,9 +1073,20 @@ img { display: block; }
   .charge-bar i { width: 17px; }
 
   .page-intro { min-height: 0; grid-template-columns: 1fr; }
-  .page-intro > div { padding: 45px 20px 60px; }
-  .page-intro h1 { margin-top: 45px; font-size: clamp(66px, 17vw, 108px); }
-  .page-intro-copy { min-height: 230px; padding: 38px 20px; border-top: 1px solid var(--line); border-left: 0; }
+  .page-intro > div { gap: 48px; padding: 42px 20px 54px; }
+  .page-intro h1 {
+    font-size: clamp(56px, 15vw, 92px);
+    line-height: .92;
+    letter-spacing: 0;
+  }
+  .page-intro-copy {
+    min-height: 0;
+    padding: 34px 20px 48px;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+    font-size: 10px;
+    line-height: 1.9;
+  }
   .schedule-day > header { min-height: 78px; padding-inline: 20px; }
   .grid-page-schedule article { min-height: 118px; grid-template-columns: 35px 135px 1fr auto; gap: 12px; padding: 18px 20px; }
   .grid-page-schedule h2 { font-size: clamp(30px, 7vw, 46px); }
