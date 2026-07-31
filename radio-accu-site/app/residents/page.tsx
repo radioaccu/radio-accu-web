@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Link from "next/link";
 import { PageIntro, PixelMark, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents as fallbackResidents } from "../_data/site";
 import { getDropboxResidents } from "../_lib/dropbox";
@@ -24,7 +25,12 @@ export default async function ResidentsPage() {
 
       <section className="residents-grid" aria-label="ACCU residents">
         {residents.map((resident, index) => (
-          <article className="resident-card" key={resident.slug}>
+          <Link
+            aria-label={`Open ${resident.name} resident profile`}
+            className="resident-card"
+            href={`/residents/${resident.slug}`}
+            key={resident.slug}
+          >
             <div
               className={`resident-image crop-${["a", "b", "c", "d"][index % 4]}`}
               style={{
@@ -42,7 +48,7 @@ export default async function ResidentsPage() {
               </div>
               <b aria-hidden="true">↗</b>
             </div>
-          </article>
+          </Link>
         ))}
       </section>
 

@@ -69,6 +69,19 @@ DROPBOX_RESIDENTS_ROOT=/ACCU/Residents
 Until Dropbox is configured or when an image is missing, the industrial ACCU
 placeholder remains visible.
 
+Each resident card opens an individual `/residents/[slug]` profile. These
+profiles automatically show all browser-ready images and videos in that
+resident folder. Word files with `bio` in their filename or folder are rendered
+as biography text. PDFs, riders, and other private documents are never exposed
+through the public media route.
+
+## Video and audio archive
+
+The `/archive` page contains the complete Radio ACCU YouTube uploads playlist,
+the 15 most recent videos as internal archive cards, and the complete SoundCloud
+profile player. Individual YouTube videos open inside the website at
+`/archive/watch/[videoId]`.
+
 ## Checks
 
 ```bash

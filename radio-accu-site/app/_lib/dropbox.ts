@@ -1,4 +1,5 @@
 import "server-only";
+import { strFromU8, unzipSync } from "fflate";
 
 type DropboxTokenResponse = {
   access_token?: string;
@@ -23,7 +24,22 @@ export type DropboxResident = {
   imagePath: string | null;
 };
 
+export type DropboxResidentAsset = {
+  id: string;
+  kind: "image" | "video" | "document";
+  name: string;
+  path: string;
+};
+
+export type DropboxResidentDetail = DropboxResident & {
+  bio: string | null;
+  documents: DropboxResidentAsset[];
+  photos: DropboxResidentAsset[];
+  videos: DropboxResidentAsset[];
+};
+
 let residentCache: {
+  entries: DropboxEntry[];
   expiresAt: number;
   residents: DropboxResident[];
 } | null = null;
@@ -124,10 +140,10 @@ function imageScore(entry: DropboxEntry, residentFolder: string) {
   return score;
 }
 
-export async function getDropboxResidents() {
-  if (!isDropboxConfigured()) return [];
+async function getDropboxSnapshot() {
+  if (!isDropboxConfigured()) return { entries: [], residents: [] };
   if (residentCache && residentCache.expiresAt > Date.now()) {
-    return residentCache.residents;
+    return residentCache;
   }
 
   const root = (process.env.DROPBOX_RESIDENTS_ROOT || "/RADIO ACCU RESIDENTS")
@@ -162,11 +178,16 @@ export async function getDropboxResidents() {
   }).sort((first, second) => first.name.localeCompare(second.name, "en"));
 
   residentCache = {
+    entries,
     expiresAt: Date.now() + 5 * 60_000,
     residents,
   };
 
-  return residents;
+  return residentCache;
+}
+
+export async function getDropboxResidents() {
+  return (await getDropboxSnapshot()).residents;
 }
 
 export async function getDropboxResidentImagePath(slug: string) {
@@ -174,7 +195,104 @@ export async function getDropboxResidentImagePath(slug: string) {
   return residents.find((resident) => resident.slug === slug)?.imagePath ?? null;
 }
 
-export async function downloadDropboxFile(path: string) {
+function buildAssets(entries: DropboxEntry[], pattern: RegExp, kind: DropboxResidentAsset["kind"]) {
+  return entries
+    .filter((entry) => entry[".tag"] === "file" && pattern.test(entry.name))
+    .sort((first, second) => first.path_display.localeCompare(second.path_display, "en"))
+    .map((entry, index) => ({
+      id: `${kind}-${index}`,
+      kind,
+      name: entry.name,
+      path: entry.path_display,
+    }));
+}
+
+function decodeXmlEntities(value: string) {
+  return value
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, "\"")
+    .replace(/&apos;/g, "'");
+}
+
+async function readResidentBio(entries: DropboxEntry[]) {
+  const bioFile = entries.find((entry) => (
+    entry[".tag"] === "file" &&
+    /(^|\/|[\s_-])bio([\s_.-]|$)/i.test(entry.path_display) &&
+    /\.(docx|txt|md)$/i.test(entry.name)
+  ));
+  if (!bioFile) return null;
+
+  const response = await downloadDropboxFile(bioFile.path_display);
+  if (!response?.ok) return null;
+
+  if (/\.(txt|md)$/i.test(bioFile.name)) {
+    return (await response.text()).trim() || null;
+  }
+
+  try {
+    const archive = unzipSync(new Uint8Array(await response.arrayBuffer()));
+    const documentXml = archive["word/document.xml"];
+    if (!documentXml) return null;
+
+    const bio = strFromU8(documentXml)
+      .replace(/<w:tab\b[^>]*\/>/g, "\t")
+      .replace(/<w:br\b[^>]*\/>/g, "\n")
+      .replace(/<\/w:p>/g, "\n\n")
+      .replace(/<[^>]+>/g, "")
+      .split("\n")
+      .map((line) => decodeXmlEntities(line).trim())
+      .filter(Boolean)
+      .join("\n\n");
+
+    return bio || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getDropboxResidentDetail(slug: string) {
+  const snapshot = await getDropboxSnapshot();
+  const resident = snapshot.residents.find((item) => item.slug === slug);
+  if (!resident) return null;
+
+  const root = (process.env.DROPBOX_RESIDENTS_ROOT || "/RADIO ACCU RESIDENTS")
+    .replace(/\/+$/, "");
+  const folder = snapshot.entries.find((entry) => (
+    entry[".tag"] === "folder" &&
+    slugify(entry.name) === slug &&
+    entry.path_lower.split("/").filter(Boolean).length ===
+      root.split("/").filter(Boolean).length + 1
+  ));
+  if (!folder) return null;
+
+  const folderPrefix = `${folder.path_lower}/`;
+  const files = snapshot.entries.filter((entry) => (
+    entry[".tag"] === "file" && entry.path_lower.startsWith(folderPrefix)
+  ));
+  const photos = buildAssets(files, /\.(jpg|jpeg|png|webp)$/i, "image");
+  const videos = buildAssets(files, /\.(mp4|mov|m4v|webm)$/i, "video");
+  const documents = buildAssets(files, /\.(pdf|docx|txt|md)$/i, "document");
+
+  return {
+    ...resident,
+    bio: await readResidentBio(files),
+    documents,
+    photos,
+    videos,
+  } satisfies DropboxResidentDetail;
+}
+
+export async function getDropboxResidentAsset(slug: string, assetId: string) {
+  const resident = await getDropboxResidentDetail(slug);
+  if (!resident) return null;
+
+  return [...resident.photos, ...resident.videos]
+    .find((asset) => asset.id === assetId) ?? null;
+}
+
+export async function downloadDropboxFile(path: string, range?: string | null) {
   const accessToken = await getDropboxAccessToken();
   if (!accessToken) return null;
 
@@ -187,6 +305,7 @@ export async function downloadDropboxFile(path: string) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Dropbox-API-Arg": dropboxArgument,
+      ...(range ? { Range: range } : {}),
     },
     cache: "no-store",
   });

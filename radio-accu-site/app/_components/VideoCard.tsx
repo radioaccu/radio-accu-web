@@ -1,15 +1,18 @@
 import Image from "next/image";
-import type { videos } from "../_data/site";
+import Link from "next/link";
+import type { ArchiveVideo } from "../_lib/youtube";
 
-type Video = (typeof videos)[number];
-
-export function VideoCard({ video, featured = false }: { video: Video; featured?: boolean }) {
+export function VideoCard({
+  video,
+  featured = false,
+}: {
+  video: ArchiveVideo;
+  featured?: boolean;
+}) {
   return (
-    <a
+    <Link
       className={`video-card${featured ? " featured" : ""}`}
-      href={`https://www.youtube.com/watch?v=${video.id}`}
-      target="_blank"
-      rel="noreferrer"
+      href={`/archive/watch/${video.id}`}
     >
       <div className="video-thumbnail">
         <Image
@@ -30,6 +33,6 @@ export function VideoCard({ video, featured = false }: { video: Video; featured?
         <p>{video.date}</p>
         <b aria-hidden="true">↗</b>
       </div>
-    </a>
+    </Link>
   );
 }
