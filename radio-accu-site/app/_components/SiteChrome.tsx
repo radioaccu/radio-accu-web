@@ -127,6 +127,7 @@ export function SiteFooter() {
         <span>Broadcast address</span>
         <strong>Bootstraat 9</strong>
         <small>3500 Hasselt, Belgium</small>
+        <a href="mailto:info@radioaccu.com">info@radioaccu.com ↗</a>
         <small>© 2026 ACCU</small>
       </address>
     </footer>
