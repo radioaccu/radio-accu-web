@@ -10,14 +10,15 @@ import { BroadcastLink } from "./_components/BroadcastLink";
 import { VideoCarousel } from "./_components/VideoCarousel";
 import { videos, YOUTUBE_CHANNEL_URL } from "./_data/site";
 import { getUpcomingSchedule } from "./_lib/schedule";
-import { getYoutubeVideos } from "./_lib/youtube";
+import { getPreviousBroadcastWeek, getYoutubeVideos } from "./_lib/youtube";
 
 export default async function Home() {
   const schedule = await getUpcomingSchedule(4);
   const nextShow = schedule[0];
   const followingShow = schedule[1];
   const youtubeVideos = await getYoutubeVideos();
-  const previousShows = youtubeVideos.length > 0 ? youtubeVideos : [...videos];
+  const videoLibrary = youtubeVideos.length > 0 ? youtubeVideos : [...videos];
+  const previousShows = getPreviousBroadcastWeek(videoLibrary, nextShow?.startsAt);
 
   return (
     <main className="site-shell">
@@ -79,7 +80,7 @@ export default async function Home() {
           </div>
           <a href={YOUTUBE_CHANNEL_URL} target="_blank" rel="noreferrer">View YouTube channel ↗</a>
         </header>
-        <VideoCarousel videos={previousShows} />
+        <VideoCarousel label="Previous broadcast week" videos={previousShows} />
         <Link className="section-link" href="/archive">Open complete archive <span>↗</span></Link>
       </section>
 

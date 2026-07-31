@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { DropboxAutoRefresh } from "../_components/DropboxAutoRefresh";
-import { PageIntro, SiteFooter, SiteHeader } from "../_components/SiteChrome";
+import { SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents as fallbackResidents } from "../_data/site";
 import { getDropboxResidents } from "../_lib/dropbox";
 import { getResidentImagePosition } from "../_lib/resident-visuals";
@@ -21,11 +21,9 @@ export default async function ResidentsPage() {
     <main className="site-shell">
       <DropboxAutoRefresh />
       <SiteHeader active="residents" />
-      <PageIntro
-        eyebrow="Module 04 / Residents"
-        title="Residents"
-        description="The recurring voices shaping the station’s sound, archive and community. Open a resident profile for their biography, official channels and listening links."
-      />
+      <section className="residents-intro" aria-labelledby="residents-heading">
+        <h1 id="residents-heading">Residents</h1>
+      </section>
 
       <section className="residents-grid" aria-label="ACCU residents">
         {residents.map((resident, index) => (
@@ -52,12 +50,6 @@ export default async function ResidentsPage() {
             </div>
           </Link>
         ))}
-      </section>
-
-      <section className="page-cta">
-        <p>Resident directory</p>
-        <h2>More profiles will connect as the grid expands.</h2>
-        <a href="mailto:info@radioaccu.com">Connect with ACCU →</a>
       </section>
       <SiteFooter />
     </main>

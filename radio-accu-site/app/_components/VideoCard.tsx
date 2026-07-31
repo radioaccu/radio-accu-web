@@ -5,21 +5,23 @@ import type { ArchiveVideo } from "../_lib/youtube";
 export function VideoCard({
   video,
   featured = false,
+  square = false,
 }: {
   video: ArchiveVideo;
   featured?: boolean;
+  square?: boolean;
 }) {
   return (
     <Link
-      className={`video-card${featured ? " featured" : ""}`}
+      className={`video-card${featured ? " featured" : ""}${square ? " square" : ""}`}
       href={`/archive/watch/${video.id}`}
     >
       <div className="video-thumbnail">
         <Image
-          src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
+          src={`https://i.ytimg.com/vi/${video.id}/${square ? "maxresdefault" : "hqdefault"}.jpg`}
           alt={`${video.title} at Radio ACCU`}
           fill
-          sizes={featured ? "(max-width: 800px) 100vw, 66vw" : "(max-width: 800px) 82vw, 33vw"}
+          sizes={square ? "(max-width: 800px) 76vw, 22vw" : featured ? "(max-width: 800px) 100vw, 66vw" : "(max-width: 800px) 82vw, 33vw"}
         />
         <span className="video-code">Archive / Video</span>
         <span className="video-play" aria-hidden="true">▶</span>
