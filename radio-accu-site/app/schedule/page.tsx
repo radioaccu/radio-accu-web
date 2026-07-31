@@ -1,8 +1,11 @@
 import { PageIntro, SignalTicker, SiteFooter, SiteHeader } from "../_components/SiteChrome";
-import { getUpcomingSchedule } from "../_lib/schedule";
+import { getCurrentMonthSchedule, getUpcomingSchedule } from "../_lib/schedule";
 
 export default async function SchedulePage() {
-  const schedule = await getUpcomingSchedule();
+  const [schedule, upcomingShows] = await Promise.all([
+    getCurrentMonthSchedule(),
+    getUpcomingSchedule(4),
+  ]);
   const months = new Map<string, {
     dates: Map<string, typeof schedule>;
     label: string;
@@ -32,11 +35,11 @@ export default async function SchedulePage() {
   return (
     <main className="site-shell">
       <SiteHeader active="schedule" />
-      <SignalTicker shows={schedule.slice(0, 4)} />
+      <SignalTicker shows={upcomingShows} />
       <PageIntro
         eyebrow="Module 02 / Schedule"
-        title="Monthly schedule"
-        description="Browse every confirmed broadcast day by month. Regular Sunday transmissions run from 14:00 until 18:00; earlier starts and extended broadcasts are read directly from the live spreadsheet."
+        title="Current month"
+        description="Only confirmed broadcast dates from the current month are shown. The page refreshes automatically from the live spreadsheet, so last-minute programme changes stay accurate without displaying the entire year."
       />
 
       <section className="grid-page-schedule" aria-label="Upcoming Radio ACCU schedule">

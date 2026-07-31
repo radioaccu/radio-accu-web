@@ -208,3 +208,22 @@ export async function getUpcomingSchedule(limit?: number) {
   const upcoming = schedule.filter((show) => new Date(show.endsAt).getTime() >= now);
   return typeof limit === "number" ? upcoming.slice(0, limit) : upcoming;
 }
+
+function getBrusselsMonthKey(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    month: "2-digit",
+    timeZone: BRUSSELS_TIME_ZONE,
+    year: "numeric",
+  }).formatToParts(date);
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+
+  return year && month ? `${year}-${month}` : date.toISOString().slice(0, 7);
+}
+
+export async function getCurrentMonthSchedule() {
+  const schedule = await getSchedule();
+  const currentMonth = getBrusselsMonthKey();
+
+  return schedule.filter((show) => show.startsAt.slice(0, 7) === currentMonth);
+}
