@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { DropboxAutoRefresh } from "../_components/DropboxAutoRefresh";
 import { PageIntro, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents as fallbackResidents } from "../_data/site";
 import { getDropboxResidents } from "../_lib/dropbox";
@@ -13,10 +14,12 @@ export default async function ResidentsPage() {
         slug: resident.dropboxFolder.split("/").at(-1) ?? resident.code.toLowerCase(),
         name: resident.name,
         imagePath: null,
+        imageVersion: null,
       }));
 
   return (
     <main className="site-shell">
+      <DropboxAutoRefresh />
       <SiteHeader active="residents" />
       <PageIntro
         eyebrow="Module 04 / Residents"
@@ -35,7 +38,7 @@ export default async function ResidentsPage() {
             <div
               className={`resident-image crop-${["a", "b", "c", "d"][index % 4]}`}
               style={{
-                "--resident-image": `url("/api/resident-image/${resident.slug}?v=2")`,
+                "--resident-image": `url("/api/resident-image/${resident.slug}?v=${encodeURIComponent(resident.imageVersion ?? "1")}")`,
                 "--resident-focus": getResidentImagePosition(resident.slug),
               } as CSSProperties}
             />

@@ -3,7 +3,8 @@ import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageIntro, SiteFooter, SiteHeader } from "../../_components/SiteChrome";
+import { DropboxAutoRefresh } from "../../_components/DropboxAutoRefresh";
+import { SiteFooter, SiteHeader } from "../../_components/SiteChrome";
 import { residents as fallbackResidents } from "../../_data/site";
 import { getDropboxResidentDetail } from "../../_lib/dropbox";
 import { getResidentImagePosition } from "../../_lib/resident-visuals";
@@ -38,6 +39,7 @@ export default async function ResidentPage({ params }: ResidentPageProps) {
     documents: [],
     folderPath: "",
     imagePath: null,
+    imageVersion: null,
     photos: [],
     slug,
     socialLinks: [],
@@ -51,12 +53,12 @@ export default async function ResidentPage({ params }: ResidentPageProps) {
 
   return (
     <main className="site-shell">
+      <DropboxAutoRefresh />
       <SiteHeader active="residents" />
-      <PageIntro
-        eyebrow="Module 04 / Resident"
-        title={resident.name}
-        description="Resident profile, biography and official listening and social channels."
-      />
+      <section className="resident-detail-header">
+        <p>Module 04 / Resident</p>
+        <h1>{resident.name}</h1>
+      </section>
 
       <section className="resident-profile">
         <div
@@ -72,7 +74,7 @@ export default async function ResidentPage({ params }: ResidentPageProps) {
               priority
               quality={92}
               sizes="(max-width: 800px) 100vw, 58vw"
-              src={`/api/resident-media/${resident.slug}/${leadPhoto.id}`}
+              src={`/api/resident-media/${resident.slug}/${leadPhoto.id}?v=${encodeURIComponent(leadPhoto.version)}`}
             />
           ) : (
             <div className="resident-profile-placeholder" aria-hidden="true" />

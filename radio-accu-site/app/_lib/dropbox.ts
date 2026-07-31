@@ -3,14 +3,18 @@ import { strFromU8, unzipSync } from "fflate";
 
 type DropboxTokenResponse = {
   access_token?: string;
+  expires_in?: number;
 };
 
 type DropboxEntry = {
   ".tag": "file" | "folder";
+  content_hash?: string;
   id?: string;
   name: string;
   path_display: string;
   path_lower: string;
+  rev?: string;
+  server_modified?: string;
 };
 
 type DropboxListResponse = {
@@ -23,6 +27,7 @@ export type DropboxResident = {
   slug: string;
   name: string;
   imagePath: string | null;
+  imageVersion: string | null;
 };
 
 export type DropboxResidentAsset = {
@@ -30,6 +35,7 @@ export type DropboxResidentAsset = {
   kind: "image" | "video" | "document";
   name: string;
   path: string;
+  version: string;
 };
 
 export type DropboxResidentLink = {
@@ -51,6 +57,11 @@ let residentCache: {
   residents: DropboxResident[];
 } | null = null;
 
+let accessTokenCache: {
+  expiresAt: number;
+  value: string;
+} | null = null;
+
 export function isDropboxConfigured() {
   return Boolean(process.env.DROPBOX_ACCESS_TOKEN || (
     process.env.DROPBOX_APP_KEY &&
@@ -60,6 +71,10 @@ export function isDropboxConfigured() {
 }
 
 async function getDropboxAccessToken() {
+  if (accessTokenCache && accessTokenCache.expiresAt > Date.now()) {
+    return accessTokenCache.value;
+  }
+
   const appKey = process.env.DROPBOX_APP_KEY;
   const appSecret = process.env.DROPBOX_APP_SECRET;
   const refreshToken = process.env.DROPBOX_REFRESH_TOKEN;
@@ -81,7 +96,13 @@ async function getDropboxAccessToken() {
 
     if (response.ok) {
       const payload = await response.json() as DropboxTokenResponse;
-      if (payload.access_token) return payload.access_token;
+      if (payload.access_token) {
+        accessTokenCache = {
+          expiresAt: Date.now() + Math.max(60, (payload.expires_in ?? 14_400) - 60) * 1000,
+          value: payload.access_token,
+        };
+        return payload.access_token;
+      }
     }
   }
 
@@ -133,36 +154,53 @@ async function listSharedDropboxEntries(root: string, sharedLink: string) {
   const pendingFolders = [""];
 
   while (pendingFolders.length > 0) {
-    const relativeFolder = pendingFolders.shift() ?? "";
-    let page = await callDropboxApi<DropboxListResponse>("files/list_folder", {
-      path: relativeFolder,
-      recursive: false,
-      limit: 2000,
-      shared_link: { url: sharedLink },
-    });
+    const batch = pendingFolders.splice(0, 8);
+    const results = await Promise.all(batch.map((relativeFolder) => (
+      listSharedDropboxFolder(root, sharedLink, relativeFolder)
+    )));
 
-    while (page) {
-      for (const entry of page.entries ?? []) {
-        const relativePath = `${relativeFolder}/${entry.name}`.replace(/\/{2,}/g, "/");
-        const pathDisplay = `${root}${relativePath}`;
-        const normalizedEntry = {
-          ...entry,
-          path_display: pathDisplay,
-          path_lower: pathDisplay.toLowerCase(),
-        };
-
-        entries.push(normalizedEntry);
-        if (entry[".tag"] === "folder") pendingFolders.push(relativePath);
-      }
-
-      if (!page.has_more || !page.cursor) break;
-      page = await callDropboxApi<DropboxListResponse>("files/list_folder/continue", {
-        cursor: page.cursor,
-      });
+    for (const result of results) {
+      entries.push(...result.entries);
+      pendingFolders.push(...result.folders);
     }
   }
 
   return entries;
+}
+
+async function listSharedDropboxFolder(
+  root: string,
+  sharedLink: string,
+  relativeFolder: string,
+) {
+  const entries: DropboxEntry[] = [];
+  const folders: string[] = [];
+  let page = await callDropboxApi<DropboxListResponse>("files/list_folder", {
+    path: relativeFolder,
+    recursive: false,
+    limit: 2000,
+    shared_link: { url: sharedLink },
+  });
+
+  while (page) {
+    for (const entry of page.entries ?? []) {
+      const relativePath = `${relativeFolder}/${entry.name}`.replace(/\/{2,}/g, "/");
+      const pathDisplay = `${root}${relativePath}`;
+      entries.push({
+        ...entry,
+        path_display: pathDisplay,
+        path_lower: pathDisplay.toLowerCase(),
+      });
+      if (entry[".tag"] === "folder") folders.push(relativePath);
+    }
+
+    if (!page.has_more || !page.cursor) break;
+    page = await callDropboxApi<DropboxListResponse>("files/list_folder/continue", {
+      cursor: page.cursor,
+    });
+  }
+
+  return { entries, folders };
 }
 
 function slugify(value: string) {
@@ -227,12 +265,15 @@ async function getDropboxSnapshot() {
       slug: slugify(folder.name),
       name: folder.name,
       imagePath: images[0]?.path_display ?? null,
+      imageVersion: images[0]
+        ? images[0].rev ?? images[0].content_hash ?? images[0].server_modified ?? images[0].id ?? "1"
+        : null,
     };
   }).sort((first, second) => first.name.localeCompare(second.name, "en"));
 
   residentCache = {
     entries,
-    expiresAt: Date.now() + 5 * 60_000,
+    expiresAt: Date.now() + 60_000,
     residents,
   };
 
@@ -257,6 +298,7 @@ function buildAssets(entries: DropboxEntry[], pattern: RegExp, kind: DropboxResi
       kind,
       name: entry.name,
       path: entry.path_display,
+      version: entry.rev ?? entry.content_hash ?? entry.server_modified ?? entry.id ?? String(index),
     }));
 }
 

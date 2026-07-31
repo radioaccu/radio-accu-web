@@ -7,14 +7,17 @@ import {
   SiteHeader,
 } from "./_components/SiteChrome";
 import { BroadcastLink } from "./_components/BroadcastLink";
-import { VideoCard } from "./_components/VideoCard";
+import { VideoCarousel } from "./_components/VideoCarousel";
 import { videos, YOUTUBE_CHANNEL_URL } from "./_data/site";
 import { getUpcomingSchedule } from "./_lib/schedule";
+import { getYoutubeVideos } from "./_lib/youtube";
 
 export default async function Home() {
   const schedule = await getUpcomingSchedule(4);
   const nextShow = schedule[0];
   const followingShow = schedule[1];
+  const youtubeVideos = await getYoutubeVideos();
+  const previousShows = youtubeVideos.length > 0 ? youtubeVideos : [...videos];
 
   return (
     <main className="site-shell">
@@ -76,11 +79,7 @@ export default async function Home() {
           </div>
           <a href={YOUTUBE_CHANNEL_URL} target="_blank" rel="noreferrer">View YouTube channel ↗</a>
         </header>
-        <div className="home-video-grid">
-          {videos.slice(0, 4).map((video, index) => (
-            <VideoCard featured={index === 0} key={video.id} video={video} />
-          ))}
-        </div>
+        <VideoCarousel videos={previousShows} />
         <Link className="section-link" href="/archive">Open complete archive <span>↗</span></Link>
       </section>
 
