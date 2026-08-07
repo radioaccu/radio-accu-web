@@ -1,4 +1,4 @@
-import { PageIntro, SiteFooter, SiteHeader } from "../_components/SiteChrome";
+import { PageTitle, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { VideoCard } from "../_components/VideoCard";
 import { videos as fallbackVideos } from "../_data/site";
 import {
@@ -18,11 +18,7 @@ export default async function ArchivePage() {
   return (
     <main className="site-shell">
       <SiteHeader active="archive" />
-      <PageIntro
-        eyebrow="Module 03 / Signal history"
-        title="Signal archive"
-        description="The complete Radio ACCU video and audio archive. Watch the YouTube broadcasts and play the SoundCloud mixes without leaving the site."
-      />
+      <PageTitle>Archive</PageTitle>
 
       <section className="archive-library-block">
         <header>

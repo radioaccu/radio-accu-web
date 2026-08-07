@@ -1,4 +1,4 @@
-import { PageIntro, SignalTicker, SiteFooter, SiteHeader } from "../_components/SiteChrome";
+import { PageTitle, SignalTicker, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { getCurrentMonthSchedule, getUpcomingSchedule } from "../_lib/schedule";
 
 export default async function SchedulePage() {
@@ -36,11 +36,7 @@ export default async function SchedulePage() {
     <main className="site-shell">
       <SiteHeader active="schedule" />
       <SignalTicker shows={upcomingShows} />
-      <PageIntro
-        eyebrow="Module 02 / Schedule"
-        title="Current month"
-        description="Only confirmed broadcast dates from the current month are shown. The page refreshes automatically from the live spreadsheet, so last-minute programme changes stay accurate without displaying the entire year."
-      />
+      <PageTitle>Schedule</PageTitle>
 
       <section className="grid-page-schedule" aria-label="Upcoming Radio ACCU schedule">
         {scheduleByMonth.length > 0 ? (

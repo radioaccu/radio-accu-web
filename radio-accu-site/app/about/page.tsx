@@ -1,15 +1,12 @@
 import Image from "next/image";
-import { PageIntro, SiteFooter, SiteHeader } from "../_components/SiteChrome";
+import Link from "next/link";
+import { PageTitle, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 
 export default function AboutPage() {
   return (
     <main className="site-shell">
       <SiteHeader active="about" />
-      <PageIntro
-        eyebrow="Module 06 / System overview"
-        title="A connection can unite"
-        description="Music, art, radio, livestreams, events, club nights and a label — one multidisciplinary platform."
-      />
+      <PageTitle>About</PageTitle>
 
       <section className="about-manifesto">
         <div className="about-logo">
@@ -34,6 +31,11 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
+      </section>
+      <section className="submit-callout">
+        <p>Connection portal</p>
+        <h2>Want to bring a show to Radio ACCU?</h2>
+        <Link href="/submit">Submit your idea ↗</Link>
       </section>
       <SiteFooter />
     </main>

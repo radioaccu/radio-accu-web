@@ -69,11 +69,30 @@ DROPBOX_RESIDENTS_ROOT=/ACCU/Residents
 Until Dropbox is configured or when an image is missing, the industrial ACCU
 placeholder remains visible.
 
-Each resident card opens an individual `/residents/[slug]` profile. These
+Each resident name in the directory opens an individual `/residents/[slug]` profile. These
 profiles automatically show all browser-ready images and videos in that
 resident folder. Word files with `bio` in their filename or folder are rendered
 as biography text. PDFs, riders, and other private documents are never exposed
 through the public media route.
+
+## Show applications by e-mail
+
+The public `/submit` form validates every request on the server and sends the
+completed proposal directly to the Radio ACCU mailbox through Combell SMTP.
+Add these values to `.env.local` locally and to the hosting environment later:
+
+```text
+SMTP_HOST=smtp-auth.mailprotect.be
+SMTP_PORT=465
+SMTP_USER=info@radioaccu.com
+SMTP_PASSWORD=YOUR_COMBELL_MAILBOX_PASSWORD
+SMTP_FROM_NAME=Radio ACCU Website
+SUBMISSION_TO_EMAIL=info@radioaccu.com
+```
+
+The mailbox password stays server-side and `.env.local` is excluded from Git.
+Messages are sent from the ACCU mailbox with the applicant set as `Reply-To`,
+so replying to the notification starts a normal conversation with the artist.
 
 ## Video and audio archive
 

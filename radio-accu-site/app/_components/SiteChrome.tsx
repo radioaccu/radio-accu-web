@@ -27,7 +27,7 @@ export function ChargeBar() {
   );
 }
 
-export function SiteHeader({ active }: { active: NavigationKey }) {
+export function SiteHeader({ active }: { active?: NavigationKey }) {
   return (
     <header className="site-header">
       <Link className="site-logo" href="/" aria-label="ACCU home">
@@ -104,6 +104,7 @@ export function SiteFooter() {
       <div className="footer-statement">
         <span>Radio ACCU</span>
         <p>A connection can unite.</p>
+        <Link href="/submit">Submit a show ↗</Link>
       </div>
       <nav className="footer-socials" aria-label="Social media and audio platforms">
         <span>Follow / listen</span>
@@ -158,6 +159,14 @@ export function PageIntro({
         <h1>{title}</h1>
       </div>
       <p className="page-intro-copy">{description}</p>
+    </section>
+  );
+}
+
+export function PageTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <section className="simple-page-title">
+      <h1>{children}</h1>
     </section>
   );
 }

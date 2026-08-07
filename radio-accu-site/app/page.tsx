@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import {
   MobileLiveDock,
   SignalTicker,
@@ -7,18 +6,11 @@ import {
   SiteHeader,
 } from "./_components/SiteChrome";
 import { BroadcastLink } from "./_components/BroadcastLink";
-import { VideoCarousel } from "./_components/VideoCarousel";
-import { videos, YOUTUBE_CHANNEL_URL } from "./_data/site";
 import { getUpcomingSchedule } from "./_lib/schedule";
-import { getPreviousBroadcastWeek, getYoutubeVideos } from "./_lib/youtube";
 
 export default async function Home() {
   const schedule = await getUpcomingSchedule(4);
   const nextShow = schedule[0];
-  const followingShow = schedule[1];
-  const youtubeVideos = await getYoutubeVideos();
-  const videoLibrary = youtubeVideos.length > 0 ? youtubeVideos : [...videos];
-  const previousShows = getPreviousBroadcastWeek(videoLibrary, nextShow?.startsAt);
 
   return (
     <main className="site-shell">
@@ -62,64 +54,19 @@ export default async function Home() {
             <span className="when-archive">Listen to a previous broadcast</span>
             <span aria-hidden="true">◉</span>
           </BroadcastLink>
-          {followingShow ? (
-            <div className="next-signal">
-              <span>Following transmission</span>
-              <strong>{followingShow.artist}</strong>
-              <time>{followingShow.date} — {followingShow.time}</time>
-            </div>
-          ) : null}
-        </div>
-      </section>
-
-      <section className="content-section previous-broadcasts" aria-labelledby="previous-heading">
-        <header className="section-heading">
-          <div>
-            <p>Signal history / YouTube</p>
-            <h2 id="previous-heading">Previous live broadcasts</h2>
-          </div>
-          <a href={YOUTUBE_CHANNEL_URL} target="_blank" rel="noreferrer">View YouTube channel ↗</a>
-        </header>
-        <VideoCarousel label="Previous broadcast week" videos={previousShows} />
-        <Link className="section-link" href="/archive">Open complete archive <span>↗</span></Link>
-      </section>
-
-      <section className="home-upcoming" aria-labelledby="upcoming-heading">
-        <header>
-          <p>Transmission schedule</p>
-          <h2 id="upcoming-heading">Coming up</h2>
-          <Link href="/schedule">View complete schedule ↗</Link>
-        </header>
-        <div className="upcoming-list">
-          {schedule.length > 0 ? (
-            schedule.map((show, index) => (
-              <article key={`${show.startsAt}-${show.artist}`}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <time>{show.date}</time>
-                <time>{show.time}</time>
-                <h3>{show.artist}</h3>
-                <b>{show.status}</b>
-              </article>
-            ))
-          ) : (
-            <div className="empty-schedule">
-              <span>Schedule initializing</span>
-              <strong>New signals will be announced soon.</strong>
-            </div>
-          )}
         </div>
       </section>
 
       <section className="home-system" aria-labelledby="system-heading">
         <div className="system-manifesto">
           <div>
-            <p className="section-kicker">Independent community radio</p>
+            <p className="section-kicker">Multidisciplinary music and art platform</p>
             <h2 id="system-heading">A connection<br />can unite.</h2>
             <p>
-              An operating system for independent culture. Broadcasting the pulse
-              of Limburg through electronic music, residents and guest signals.
+              Broadcasting the pulse of Limburg through electronic music, art,
+              residents and guest signals.
             </p>
-            <Link href="/about">System overview ↗</Link>
+            <a href="/about">About ACCU ↗</a>
           </div>
         </div>
       </section>
