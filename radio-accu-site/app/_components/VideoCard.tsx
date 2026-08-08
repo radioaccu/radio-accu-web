@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { ArchiveVideo } from "../_lib/youtube";
+import { YouTubeThumbnail } from "./YouTubeThumbnail";
 
 export function VideoCard({
   video,
@@ -17,11 +17,10 @@ export function VideoCard({
       href={`/archive/watch/${video.id}`}
     >
       <div className="video-thumbnail">
-        <Image
-          src={`https://i.ytimg.com/vi/${video.id}/${square ? "maxresdefault" : "hqdefault"}.jpg`}
+        <YouTubeThumbnail
           alt={`${video.title} at Radio ACCU`}
-          fill
           sizes={square ? "(max-width: 800px) 76vw, 22vw" : featured ? "(max-width: 800px) 100vw, 66vw" : "(max-width: 800px) 82vw, 33vw"}
+          videoId={video.id}
         />
         <span className="video-code">Archive / Video</span>
         <span className="video-play" aria-hidden="true">▶</span>

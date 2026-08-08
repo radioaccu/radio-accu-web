@@ -538,10 +538,10 @@ img { display: block; }
 .video-thumbnail { position: relative; min-height: 280px; overflow: hidden; border-bottom: 1px solid var(--line); }
 .video-thumbnail > img {
   object-fit: cover;
-  filter: saturate(.98) contrast(1.04) brightness(.9);
-  transition: filter 300ms ease, transform 600ms ease;
+  filter: none;
+  transition: transform 600ms ease;
 }
-.video-card:hover .video-thumbnail > img { filter: saturate(1.08) contrast(1.04) brightness(1); transform: scale(1.025); }
+.video-card:hover .video-thumbnail > img { filter: none; transform: scale(1.025); }
 .video-thumbnail::after {
   position: absolute;
   inset: 0;
@@ -717,6 +717,10 @@ img { display: block; }
   gap: 12px;
   padding: clamp(26px, 4vw, 64px);
   border-bottom: 1px solid var(--line);
+}
+.archive-page-grid .video-thumbnail {
+  min-height: 0;
+  aspect-ratio: 16 / 9;
 }
 .page-wide-link { margin: 0; border-width: 0 0 1px; padding-inline: clamp(28px, 4vw, 70px); }
 .archive-library-block { border-bottom: 1px solid var(--line); }
