@@ -75,6 +75,7 @@ export default async function ResidentPage({ params }: ResidentPageProps) {
               quality={92}
               sizes="(max-width: 800px) 100vw, 58vw"
               src={`/api/resident-media/${resident.slug}/${leadPhoto.id}?v=${encodeURIComponent(leadPhoto.version)}`}
+              unoptimized
             />
           ) : (
             <div className="resident-profile-placeholder" aria-hidden="true" />

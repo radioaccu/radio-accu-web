@@ -1,0 +1,17 @@
+# Copy this file to .dev.vars for local Cloudflare previews.
+# Never commit the real .dev.vars file.
+GOOGLE_SHEET_SCHEDULE_CSV_URL=
+
+DROPBOX_ACCESS_TOKEN=
+DROPBOX_APP_KEY=
+DROPBOX_APP_SECRET=
+DROPBOX_REFRESH_TOKEN=
+DROPBOX_RESIDENTS_ROOT="/RADIO ACCU RESIDENTS"
+DROPBOX_RESIDENTS_SHARED_LINK=
+
+SMTP_HOST=smtp-auth.mailprotect.be
+SMTP_PORT=465
+SMTP_USER=info@radioaccu.com
+SMTP_PASSWORD=
+SMTP_FROM_NAME="Radio ACCU Website"
+SUBMISSION_TO_EMAIL=info@radioaccu.com

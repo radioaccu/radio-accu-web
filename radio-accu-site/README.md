@@ -107,3 +107,48 @@ profile player. Individual YouTube videos open inside the website at
 npm run lint
 npm run build
 ```
+
+## Cloudflare Workers
+
+The production site is prepared for Cloudflare Workers through OpenNext. Your
+laptop is only needed to edit and preview the website; Cloudflare keeps the
+published site online.
+
+### Local Cloudflare preview
+
+Copy the example variable file once and fill it with the same private values as
+your local environment:
+
+```bash
+cp .dev.vars.example .dev.vars
+npm run preview
+```
+
+Open `http://localhost:8787`. Both `.env.local` and `.dev.vars` are ignored by
+Git and must never be committed.
+
+### First Cloudflare deployment
+
+Connect the GitHub repository to Cloudflare Workers Builds and use:
+
+```text
+Root directory: radio-accu-site
+Deploy command: npm run deploy
+```
+
+Add every variable listed in `.dev.vars.example` to the Cloudflare project as a
+secret or environment variable. Publish to the temporary `workers.dev` address
+first and test the schedule, residents, archive and submission form before
+connecting the final domain.
+
+### Daily maintenance
+
+- Schedule changes are made in the connected Google Sheet.
+- Resident folders, images, biography and social links are maintained in
+  Dropbox.
+- Website text or design changes are committed and pushed to GitHub. Cloudflare
+  then publishes them automatically.
+- Never paste Dropbox, SMTP or other passwords into GitHub files.
+
+When the final domain is moved to Cloudflare DNS, preserve the existing Combell
+mail records (MX, SPF, DKIM and DMARC) so `info@radioaccu.com` keeps working.
