@@ -25,7 +25,17 @@ export default async function Home() {
             fill
             priority
             sizes="(max-width: 900px) 100vw, 72vw"
+            className="live-visual-image"
           />
+          <span className="live-visual-offline" aria-hidden="true">
+            <Image
+              src="/accu-symbol-white.png"
+              alt=""
+              width={3000}
+              height={3000}
+              sizes="(max-width: 900px) 52vw, 34vw"
+            />
+          </span>
           <div className="live-visual-shade" />
           <span className="live-visual-status">
             <i />
