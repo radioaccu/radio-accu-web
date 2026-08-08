@@ -5,6 +5,11 @@ import { PageTitle, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents as fallbackResidents } from "../_data/site";
 import { getDropboxResidents, type DropboxResident } from "../_lib/dropbox";
 
+// Resident content is sourced from Dropbox at request time. Marking this route
+// as dynamic prevents Next.js from treating the no-store Dropbox requests as a
+// static-rendering error on Cloudflare.
+export const dynamic = "force-dynamic";
+
 export default async function ResidentsPage() {
   let dropboxResidents: DropboxResident[] = [];
 

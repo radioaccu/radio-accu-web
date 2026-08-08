@@ -9,6 +9,10 @@ import { residents as fallbackResidents } from "../../_data/site";
 import { getDropboxResidentDetail } from "../../_lib/dropbox";
 import { getResidentImagePosition } from "../../_lib/resident-visuals";
 
+// Profiles read their biography and media directly from Dropbox, so they must
+// be rendered dynamically in production as well.
+export const dynamic = "force-dynamic";
+
 type ResidentPageProps = {
   params: Promise<{ slug: string }>;
 };
