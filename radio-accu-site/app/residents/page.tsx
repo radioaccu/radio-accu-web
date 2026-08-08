@@ -1,20 +1,40 @@
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { DropboxAutoRefresh } from "../_components/DropboxAutoRefresh";
 import { PageTitle, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 import { residents as fallbackResidents } from "../_data/site";
-import { getDropboxResidents } from "../_lib/dropbox";
+import { getDropboxResidents, type DropboxResident } from "../_lib/dropbox";
 
 export default async function ResidentsPage() {
-  const dropboxResidents = await getDropboxResidents();
+  let dropboxResidents: DropboxResident[] = [];
+
+  try {
+    dropboxResidents = await getDropboxResidents();
+  } catch (error) {
+    unstable_rethrow(error);
+    console.error(
+      "[residents] Dropbox resident directory could not be loaded; using the local directory.",
+      error instanceof Error ? error.message : "Unknown Dropbox error",
+    );
+  }
+
   const residents = dropboxResidents.length > 0
     ? dropboxResidents
     : fallbackResidents.map((resident) => ({
-        slug: resident.dropboxFolder.split("/").at(-1) ?? resident.code.toLowerCase(),
+        slug: resident.dropboxFolder.split("/").pop() || resident.code.toLowerCase(),
         name: resident.name,
         imagePath: null,
         imageVersion: null,
       }));
-  const alphabeticalResidents = [...residents].sort((a, b) => a.name.localeCompare(b.name));
+  const alphabeticalResidents = residents
+    .filter((resident) => resident.slug && resident.name)
+    .sort((first, second) => {
+      const firstName = first.name.toUpperCase();
+      const secondName = second.name.toUpperCase();
+      if (firstName < secondName) return -1;
+      if (firstName > secondName) return 1;
+      return 0;
+    });
 
   return (
     <main className="site-shell">

@@ -1,5 +1,6 @@
 import "server-only";
 import { strFromU8, unzipSync } from "fflate";
+import { unstable_rethrow } from "next/navigation";
 
 type DropboxTokenResponse = {
   access_token?: string;
@@ -281,7 +282,16 @@ async function getDropboxSnapshot() {
 }
 
 export async function getDropboxResidents() {
-  return (await getDropboxSnapshot()).residents;
+  try {
+    return (await getDropboxSnapshot()).residents;
+  } catch (error) {
+    unstable_rethrow(error);
+    console.error(
+      "[dropbox] Resident directory request failed.",
+      error instanceof Error ? error.message : "Unknown Dropbox error",
+    );
+    return [];
+  }
 }
 
 export async function getDropboxResidentImagePath(slug: string) {
