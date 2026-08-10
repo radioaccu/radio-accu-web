@@ -122,10 +122,3 @@ export const residents = [
   { code: "NODE-003", name: "Aura", genre: "House / Electro", crop: "crop-c", dropboxFolder: "/ACCU/Residents/aura" },
   { code: "NODE-004", name: "Sohirab", genre: "Techno / Experimental", crop: "crop-d", dropboxFolder: "/ACCU/Residents/sohirab" },
 ] as const;
-
-export const guestMixes = [
-  { code: "GM-014", artist: "Philou Louzolo", location: "Belgium", duration: "60 min", crop: "crop-b" },
-  { code: "GM-013", artist: "Joanna OJ", location: "Belgium", duration: "60 min", crop: "crop-a" },
-  { code: "GM-012", artist: "Ecilo", location: "Belgium", duration: "61 min", crop: "crop-c" },
-  { code: "GM-011", artist: "Skele Tale", location: "Belgium", duration: "50 min", crop: "crop-d" },
-] as const;

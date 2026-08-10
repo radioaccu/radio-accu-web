@@ -28,6 +28,10 @@ export function ChargeBar() {
 }
 
 export function SiteHeader({ active }: { active?: NavigationKey }) {
+  const visibleNavigation = navigation.filter(
+    (item) => item.key !== "gm" || process.env.GM_SERIES_ENABLED === "true",
+  );
+
   return (
     <header className="site-header">
       <Link className="site-logo" href="/" aria-label="ACCU home">
@@ -41,9 +45,9 @@ export function SiteHeader({ active }: { active?: NavigationKey }) {
       </Link>
 
       <nav className="site-nav" aria-label="Main navigation">
-        {navigation.map((item) => (
+        {visibleNavigation.map((item, index) => (
           <Link className={item.key === active ? "active" : ""} href={item.href} key={item.key}>
-            <small>[{item.number}]</small>
+            <small>[{String(index + 1).padStart(2, "0")}]</small>
             <strong>{item.label}</strong>
           </Link>
         ))}

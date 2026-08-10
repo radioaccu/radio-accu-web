@@ -33,6 +33,7 @@ export default async function Home() {
               alt=""
               width={3000}
               height={3000}
+              priority
               sizes="(max-width: 900px) 52vw, 34vw"
             />
           </span>
