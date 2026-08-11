@@ -8,14 +8,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type GuestMixSubmitPageProps = {
-  searchParams: Promise<{ invite?: string | string[] }>;
-};
-
-export default async function GuestMixSubmitPage({ searchParams }: GuestMixSubmitPageProps) {
-  const parameters = await searchParams;
-  const inviteToken = Array.isArray(parameters.invite) ? parameters.invite[0] : parameters.invite;
-
+export default function GuestMixSubmitPage() {
   return (
     <main className="gm-portal-shell">
       <header className="gm-portal-header">
@@ -57,7 +50,7 @@ export default async function GuestMixSubmitPage({ searchParams }: GuestMixSubmi
         </div>
       </section>
 
-      <GuestMixSubmissionForm inviteToken={inviteToken?.trim().slice(0, 200)} />
+      <GuestMixSubmissionForm />
       <footer className="gm-portal-footer">
         <Image src="/accu-symbol-white.png" alt="ACCU symbol" width={3000} height={3000} />
         <p>A connection can unite.</p>

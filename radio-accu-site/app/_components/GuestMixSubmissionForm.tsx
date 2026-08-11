@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 
 type SubmitState = "idle" | "sending" | "success" | "error";
 
-export function GuestMixSubmissionForm({ inviteToken = "" }: { inviteToken?: string }) {
+export function GuestMixSubmissionForm() {
   const [state, setState] = useState<SubmitState>("idle");
   const [message, setMessage] = useState("");
 
@@ -49,21 +49,12 @@ export function GuestMixSubmissionForm({ inviteToken = "" }: { inviteToken?: str
       <div className="form-section-heading">
         <span>01</span>
         <div>
-          <p>Private invitation</p>
+          <p>Private submission</p>
           <h2>Artist information</h2>
         </div>
       </div>
 
       <div className="form-grid">
-        {inviteToken ? (
-          <input name="inviteToken" type="hidden" value={inviteToken} />
-        ) : (
-          <label className="form-span-2">
-            <span>Invitation code *</span>
-            <input name="inviteToken" required maxLength={200} autoComplete="off" />
-            <small>This code is included in your personal Radio ACCU invitation link.</small>
-          </label>
-        )}
         <label>
           <span>Artist / DJ name *</span>
           <input name="artistName" required maxLength={120} autoComplete="organization" />
@@ -243,7 +234,7 @@ export function GuestMixSubmissionForm({ inviteToken = "" }: { inviteToken?: str
       </label>
       <label className="form-consent">
         <input name="privacyConsent" type="checkbox" required />
-        <span>I agree that Radio ACCU may store these details to prepare, publish and contact me about this invited Guest Mix. *</span>
+        <span>I agree that Radio ACCU may store these details to prepare, publish and contact me about this Guest Mix. *</span>
       </label>
 
       <label className="form-honeypot" aria-hidden="true">

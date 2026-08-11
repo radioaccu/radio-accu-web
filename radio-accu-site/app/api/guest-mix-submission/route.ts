@@ -11,7 +11,6 @@ type GuestMixPayload = Record<string, unknown> & {
 };
 
 const limits = {
-  inviteToken: 200,
   artistName: 120,
   email: 180,
   country: 100,
@@ -87,7 +86,6 @@ export async function POST(request: Request) {
   if (text(raw.company, 200)) return Response.json({ ok: true });
 
   const submission = {
-    inviteToken: text(raw.inviteToken, limits.inviteToken),
     artistName: text(raw.artistName, limits.artistName),
     email: text(raw.email, limits.email),
     country: text(raw.country, limits.country),
@@ -120,7 +118,6 @@ export async function POST(request: Request) {
   };
 
   const required = [
-    submission.inviteToken,
     submission.artistName,
     submission.email,
     submission.country,
@@ -228,8 +225,8 @@ export async function POST(request: Request) {
           to: destination,
           replyTo: submission.email,
           subject: `Guest Mix submission — ${cleanArtist}`,
-          text: `A new invited Guest Mix submission from ${submission.artistName} has been saved in ACCU HQ.\n\nOpen the Guest Mixes sheet to review all information and files.`,
-          html: `<div style="font-family:Arial,sans-serif;color:#111"><h1 style="font-size:24px">New invited Guest Mix submission</h1><table style="border-collapse:collapse;width:100%;max-width:900px">${rows}</table><p>Open ACCU HQ to review the complete submission.</p></div>`,
+          text: `A new Guest Mix submission from ${submission.artistName} has been saved in ACCU HQ.\n\nOpen the Guest Mixes sheet to review all information and files.`,
+          html: `<div style="font-family:Arial,sans-serif;color:#111"><h1 style="font-size:24px">New Guest Mix submission</h1><table style="border-collapse:collapse;width:100%;max-width:900px">${rows}</table><p>Open ACCU HQ to review the complete submission.</p></div>`,
         }),
         transporter.sendMail({
           from: `"${fromName}" <${smtpUser}>`,

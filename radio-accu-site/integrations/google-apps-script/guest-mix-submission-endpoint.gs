@@ -1,9 +1,10 @@
 /**
- * Radio ACCU — invite-only Guest Mix submission endpoint
+ * Radio ACCU — private Guest Mix submission endpoint
  *
  * Add this file to the Apps Script project attached to ACCU HQ. Deploy the
  * project as a Web app that executes as you and can be accessed by anyone.
- * Every request still requires both a server secret and a valid invite token.
+ * Every request still requires the private server secret. Artists do not need
+ * an invitation code; repeat submissions are matched by e-mail address.
  */
 
 const ACCU_GM_SUBMISSION = {
@@ -74,11 +75,10 @@ function refreshAccuGuestMixInviteLinks() {
   const sheet = spreadsheet.getSheetByName(ACCU_GM_SUBMISSION.INVITE_SHEET);
   if (!sheet) throw new Error('Sheet "Invite Tracker" was not found.');
 
-  ensureGuestMixHeaders_(sheet, ['Invite Token', 'Private Form URL', 'Status', 'Submitted At']);
+  ensureGuestMixHeaders_(sheet, ['Private Form URL', 'Status', 'Submitted At']);
   const headerMap = guestMixHeaderMap_(sheet);
   const artistColumn = guestMixHeader_(headerMap, ['Artist', 'Artist Name', 'Artist / DJ Name']);
   const emailColumn = guestMixHeader_(headerMap, ['Email', 'Email Address']);
-  const tokenColumn = guestMixHeader_(headerMap, ['Invite Token']);
   const linkColumn = guestMixHeader_(headerMap, ['Private Form URL']);
   const formUrl = PropertiesService.getScriptProperties().getProperty('GM_FORM_BASE_URL') ||
     ACCU_GM_SUBMISSION.DEFAULT_FORM_URL;
@@ -97,13 +97,8 @@ function refreshAccuGuestMixInviteLinks() {
     const email = String(row[emailColumn] || '').trim();
     if (!artist || !email) return;
 
-    const token = String(row[tokenColumn] || '').trim() ||
-      Utilities.getUuid().replace(/-/g, '');
     const rowNumber = index + 2;
-    sheet.getRange(rowNumber, tokenColumn + 1).setValue(token);
-    sheet.getRange(rowNumber, linkColumn + 1).setValue(
-      formUrl + '?invite=' + encodeURIComponent(token),
-    );
+    sheet.getRange(rowNumber, linkColumn + 1).setValue(formUrl);
   });
 }
 
@@ -120,9 +115,8 @@ function doPost(event) {
     }
 
     const submission = body.submission || {};
-    const invitation = validateGuestMixInvitation_(submission);
     const result = upsertGuestMixSubmission_(submission);
-    updateGuestMixInvitation_(invitation, submission);
+    updateGuestMixInvitationByEmail_(submission);
 
     return guestMixJson_({ ok: true, code: result.code, status: result.status });
   } catch (error) {
@@ -136,41 +130,6 @@ function doPost(event) {
   }
 }
 
-function validateGuestMixInvitation_(submission) {
-  const spreadsheet = getAccuGuestMixSpreadsheet_();
-  const sheet = spreadsheet.getSheetByName(ACCU_GM_SUBMISSION.INVITE_SHEET);
-  if (!sheet) throw new Error('Invite Tracker was not found.');
-
-  ensureGuestMixHeaders_(sheet, ['Invite Token', 'Private Form URL', 'Status', 'Submitted At']);
-  const headerMap = guestMixHeaderMap_(sheet);
-  const tokenColumn = guestMixHeader_(headerMap, ['Invite Token']);
-  const emailColumn = guestMixHeader_(headerMap, ['Email', 'Email Address']);
-  const artistColumn = guestMixHeader_(headerMap, ['Artist', 'Artist Name', 'Artist / DJ Name']);
-  const token = String(submission.inviteToken || '').trim();
-  const email = String(submission.email || '').trim().toLowerCase();
-
-  if (!token || !email) throw new Error('A valid invitation link is required.');
-
-  const rows = sheet.getDataRange().getValues();
-  for (let index = 1; index < rows.length; index += 1) {
-    if (String(rows[index][tokenColumn] || '').trim() !== token) continue;
-
-    const invitedEmail = String(rows[index][emailColumn] || '').trim().toLowerCase();
-    if (invitedEmail && invitedEmail !== email) {
-      throw new Error('This e-mail address does not match the private invitation.');
-    }
-
-    return {
-      sheet,
-      rowNumber: index + 1,
-      headerMap,
-      invitedArtist: String(rows[index][artistColumn] || '').trim(),
-    };
-  }
-
-  throw new Error('This invitation link is invalid or no longer active.');
-}
-
 function upsertGuestMixSubmission_(submission) {
   const spreadsheet = getAccuGuestMixSpreadsheet_();
   let sheet = spreadsheet.getSheetByName(ACCU_GM_SUBMISSION.GUEST_MIX_SHEET);
@@ -179,14 +138,15 @@ function upsertGuestMixSubmission_(submission) {
   ensureGuestMixHeaders_(sheet, ACCU_GM_SUBMISSION.GUEST_MIX_HEADERS);
   const headerMap = guestMixHeaderMap_(sheet);
   const tokenColumn = guestMixHeader_(headerMap, ['Invite Token']);
+  const emailColumn = guestMixHeader_(headerMap, ['Email Address']);
   const statusColumn = guestMixHeader_(headerMap, ['Status']);
   const codeColumn = guestMixHeader_(headerMap, ['GM Code']);
-  const token = String(submission.inviteToken || '').trim();
+  const email = String(submission.email || '').trim().toLowerCase();
   const rows = sheet.getDataRange().getValues();
   let rowNumber = sheet.getLastRow() + 1;
 
   for (let index = 1; index < rows.length; index += 1) {
-    if (String(rows[index][tokenColumn] || '').trim() === token) {
+    if (String(rows[index][emailColumn] || '').trim().toLowerCase() === email) {
       rowNumber = index + 1;
       break;
     }
@@ -203,7 +163,7 @@ function upsertGuestMixSubmission_(submission) {
     : 'Submitted';
 
   const values = {
-    'Invite Token': token,
+    'Invite Token': existingRow ? String(existing[tokenColumn] || '').trim() : '',
     'GM Code': existingCode || nextGuestMixCode_(sheet, codeColumn),
     'Artist / DJ Name': submission.artistName,
     'Email Address': submission.email,
@@ -244,11 +204,26 @@ function upsertGuestMixSubmission_(submission) {
   return { code: values['GM Code'], status };
 }
 
-function updateGuestMixInvitation_(invitation, submission) {
-  const statusColumn = guestMixHeader_(invitation.headerMap, ['Status']);
-  const submittedColumn = guestMixHeader_(invitation.headerMap, ['Submitted At']);
-  invitation.sheet.getRange(invitation.rowNumber, statusColumn + 1).setValue('Submitted');
-  invitation.sheet.getRange(invitation.rowNumber, submittedColumn + 1).setValue(new Date());
+function updateGuestMixInvitationByEmail_(submission) {
+  const spreadsheet = getAccuGuestMixSpreadsheet_();
+  const sheet = spreadsheet.getSheetByName(ACCU_GM_SUBMISSION.INVITE_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return;
+
+  ensureGuestMixHeaders_(sheet, ['Private Form URL', 'Status', 'Submitted At']);
+  const headerMap = guestMixHeaderMap_(sheet);
+  const emailColumn = guestMixHeader_(headerMap, ['Email', 'Email Address']);
+  const statusColumn = guestMixHeader_(headerMap, ['Status']);
+  const submittedColumn = guestMixHeader_(headerMap, ['Submitted At']);
+  if (emailColumn === undefined) return;
+
+  const email = String(submission.email || '').trim().toLowerCase();
+  const rows = sheet.getDataRange().getValues();
+  for (let index = 1; index < rows.length; index += 1) {
+    if (String(rows[index][emailColumn] || '').trim().toLowerCase() !== email) continue;
+    sheet.getRange(index + 1, statusColumn + 1).setValue('Submitted');
+    sheet.getRange(index + 1, submittedColumn + 1).setValue(new Date());
+    return;
+  }
 }
 
 function nextGuestMixCode_(sheet, codeColumn) {

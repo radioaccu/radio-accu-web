@@ -2,8 +2,8 @@
 
 ## Safe data flow
 
-1. Add the invited artist and e-mail address to `Invite Tracker`.
-2. Send the artist the generated private website link.
+1. Optionally add the invited artist and e-mail address to `Invite Tracker`.
+2. Send the artist the private portal link: `https://submit.radioaccu.com/guest-mix-submit`.
 3. The artist completes the separate branded portal on `submit.radioaccu.com`.
 4. Their response updates `Guest Mixes` and marks the invitation as `Submitted`.
 5. Review the mix, rights, biography and assets internally.
@@ -13,7 +13,7 @@
 9. The website reads that tab every five minutes once the GM Series is enabled.
 
 Replies sent as ordinary free-form e-mail cannot be mapped reliably. The invite
-mail should therefore always contain that artist's private website link.
+mail should therefore always contain the private portal link.
 
 ## One-time Google Sheets setup
 
@@ -36,18 +36,19 @@ GM_WEBHOOK_SECRET=the-secret-from-the-execution-log
 9. Run `setupAccuGuestMixPublicFeed` once.
 10. In Google Sheets, publish only `Website GM` as CSV and copy its CSV URL.
 
-## Sending a private invitation
+## Sending the private portal
 
-1. Add the artist name and e-mail address to `Invite Tracker`.
-2. Run `refreshAccuGuestMixInviteLinks` in Apps Script.
-3. Copy that row's `Private Form URL` into the invitation e-mail.
-4. The same link can be used again if the artist needs to correct an answer.
+1. Send `https://submit.radioaccu.com/guest-mix-submit` to an invited artist.
+2. The artist completes the form without an invitation code.
+3. Optionally add their name and e-mail to `Invite Tracker`; the status is then
+   updated to `Submitted` when the same e-mail address is used in the form.
+4. The same portal can be used again if the artist needs to correct an answer.
 
-The personal token and invited e-mail address must both match. A repeated
-submission updates the same Guest Mix row instead of creating a duplicate.
+The e-mail address is the unique match. A repeated submission with the same
+e-mail address updates the existing Guest Mix row instead of creating a duplicate.
 
 The portal is intentionally separated from the public Radio ACCU website. Its
-private invitation URLs use `https://submit.radioaccu.com/guest-mix-submit` and
+private portal uses `https://submit.radioaccu.com/guest-mix-submit` and
 the page is not present in the public navigation or search index.
 
 Never publish `Form Responses`, `Submission Log`, `Guest Mixes`, e-mail
