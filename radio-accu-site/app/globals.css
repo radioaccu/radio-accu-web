@@ -1194,6 +1194,7 @@ img { display: block; }
 }
 .form-grid input,
 .form-grid select { min-height: 48px; }
+.form-grid input[readonly] { color: var(--acid); cursor: default; }
 .form-grid textarea { min-height: 110px; padding: 10px 0; resize: vertical; }
 .form-grid select { color-scheme: dark; }
 .form-grid input:focus,
