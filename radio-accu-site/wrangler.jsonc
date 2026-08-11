@@ -4,6 +4,11 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-08-08",
   "compatibility_flags": ["nodejs_compat"],
+  "routes": [
+    { "pattern": "radioaccu.com", "custom_domain": true },
+    { "pattern": "www.radioaccu.com", "custom_domain": true },
+    { "pattern": "submit.radioaccu.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

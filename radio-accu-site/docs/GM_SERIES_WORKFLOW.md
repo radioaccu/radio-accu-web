@@ -4,7 +4,7 @@
 
 1. Add the invited artist and e-mail address to `Invite Tracker`.
 2. Send the artist the generated private website link.
-3. The artist completes the branded form on `radioaccu.com`.
+3. The artist completes the separate branded portal on `submit.radioaccu.com`.
 4. Their response updates `Guest Mixes` and marks the invitation as `Submitted`.
 5. Review the mix, rights, biography and assets internally.
 6. Add the final public artwork, SoundCloud and/or YouTube links.
@@ -45,6 +45,10 @@ GM_WEBHOOK_SECRET=the-secret-from-the-execution-log
 
 The personal token and invited e-mail address must both match. A repeated
 submission updates the same Guest Mix row instead of creating a duplicate.
+
+The portal is intentionally separated from the public Radio ACCU website. Its
+private invitation URLs use `https://submit.radioaccu.com/guest-mix-submit` and
+the page is not present in the public navigation or search index.
 
 Never publish `Form Responses`, `Submission Log`, `Guest Mixes`, e-mail
 addresses, private download links or permission records.

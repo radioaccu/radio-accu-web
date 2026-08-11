@@ -9,7 +9,7 @@
 const ACCU_GM_SUBMISSION = {
   INVITE_SHEET: 'Invite Tracker',
   GUEST_MIX_SHEET: 'Guest Mixes',
-  DEFAULT_FORM_URL: 'https://radioaccu.com/guest-mix-submit',
+  DEFAULT_FORM_URL: 'https://submit.radioaccu.com/guest-mix-submit',
   PUBLIC_STATUSES: ['published', 'released', 'live'],
   GUEST_MIX_HEADERS: [
     'Invite Token',

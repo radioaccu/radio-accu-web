@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { GuestMixSubmissionForm } from "../_components/GuestMixSubmissionForm";
-import { PageTitle, SiteFooter, SiteHeader } from "../_components/SiteChrome";
 
 export const metadata: Metadata = {
   title: "Guest Mix submission — Radio ACCU",
@@ -17,9 +17,28 @@ export default async function GuestMixSubmitPage({ searchParams }: GuestMixSubmi
   const inviteToken = Array.isArray(parameters.invite) ? parameters.invite[0] : parameters.invite;
 
   return (
-    <main className="site-shell">
-      <SiteHeader />
-      <PageTitle>Guest Mix submission</PageTitle>
+    <main className="gm-portal-shell">
+      <header className="gm-portal-header">
+        <a href="https://radioaccu.com" aria-label="Visit the Radio ACCU website">
+          <Image
+            src="/accu-chrome-logo-trimmed.png"
+            alt="Radio ACCU"
+            width={3953}
+            height={1533}
+            priority
+          />
+        </a>
+        <div>
+          <span>Private portal</span>
+          <strong>Guest Mix Series</strong>
+        </div>
+        <p>Invitation only</p>
+      </header>
+
+      <section className="gm-portal-title">
+        <span>ACCU / GM</span>
+        <h1>Guest Mix<br />submission</h1>
+      </section>
 
       <section className="submit-introduction">
         <p>Invitation only</p>
@@ -39,7 +58,14 @@ export default async function GuestMixSubmitPage({ searchParams }: GuestMixSubmi
       </section>
 
       <GuestMixSubmissionForm inviteToken={inviteToken?.trim().slice(0, 200)} />
-      <SiteFooter />
+      <footer className="gm-portal-footer">
+        <Image src="/accu-symbol-white.png" alt="ACCU symbol" width={3000} height={3000} />
+        <p>A connection can unite.</p>
+        <div>
+          <a href="mailto:info@radioaccu.com">info@radioaccu.com</a>
+          <span>Private invited-artist portal</span>
+        </div>
+      </footer>
     </main>
   );
 }
