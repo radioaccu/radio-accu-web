@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 const portalHostname = "submit.radioaccu.com";
 const portalPath = "/guest-mix-submit";
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const hostname = (request.headers.get("host") ?? "").split(":")[0].toLowerCase();
   const pathname = request.nextUrl.pathname;
 
