@@ -23,7 +23,6 @@ export function GuestMixSubmissionForm() {
         body: JSON.stringify({
           ...values,
           exclusive: values.exclusive === "Yes",
-          rightsConfirmed: values.rightsConfirmed === "on",
           publicationPermission: values.publicationPermission === "on",
           archivePermission: values.archivePermission === "on",
           privacyConsent: values.privacyConsent === "on",
@@ -220,10 +219,6 @@ export function GuestMixSubmissionForm() {
         </div>
       </div>
 
-      <label className="form-consent">
-        <input name="rightsConfirmed" type="checkbox" required />
-        <span>I confirm that I own, or have the necessary rights to distribute, this recording. *</span>
-      </label>
       <label className="form-consent">
         <input name="publicationPermission" type="checkbox" required />
         <span>I grant Radio ACCU permission to publish, stream, archive and promote this Guest Mix across its website, YouTube, SoundCloud, Mixcloud and social channels. *</span>

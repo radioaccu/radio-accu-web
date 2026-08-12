@@ -4,7 +4,6 @@ export const runtime = "nodejs";
 
 type GuestMixPayload = Record<string, unknown> & {
   exclusive?: unknown;
-  rightsConfirmed?: unknown;
   publicationPermission?: unknown;
   archivePermission?: unknown;
   privacyConsent?: unknown;
@@ -111,7 +110,6 @@ export async function POST(request: Request) {
     voiceIdLink: text(raw.voiceIdLink, limits.voiceIdLink),
     preferredReleasePeriod: text(raw.preferredReleasePeriod, limits.preferredReleasePeriod),
     datesToAvoid: text(raw.datesToAvoid, limits.datesToAvoid),
-    rightsConfirmed: raw.rightsConfirmed === true,
     publicationPermission: raw.publicationPermission === true,
     archivePermission: raw.archivePermission === true,
     privacyConsent: raw.privacyConsent === true,
@@ -156,7 +154,6 @@ export async function POST(request: Request) {
     return Response.json({ message: "The biography must contain between 100 and 250 words." }, { status: 400 });
   }
   if (
-    !submission.rightsConfirmed ||
     !submission.publicationPermission ||
     !submission.archivePermission ||
     !submission.privacyConsent
