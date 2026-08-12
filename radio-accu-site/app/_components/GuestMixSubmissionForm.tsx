@@ -317,13 +317,6 @@ export function GuestMixSubmissionForm() {
         </div>
       </div>
 
-      <div className="form-grid">
-        <label className="form-span-2">
-          <span>Dates to avoid</span>
-          <textarea name="datesToAvoid" maxLength={700} rows={4} />
-        </label>
-      </div>
-
       <div className="form-section-heading">
         <span>06</span>
         <div>

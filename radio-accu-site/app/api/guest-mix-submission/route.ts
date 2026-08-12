@@ -33,7 +33,6 @@ const limits = {
   promoArtworkLink: 1000,
   voiceIdLink: 1000,
   preferredReleasePeriod: 700,
-  datesToAvoid: 700,
 } as const;
 
 function text(value: unknown, maximum: number) {
@@ -109,7 +108,6 @@ export async function POST(request: Request) {
     promoArtworkLink: text(raw.promoArtworkLink, limits.promoArtworkLink),
     voiceIdLink: text(raw.voiceIdLink, limits.voiceIdLink),
     preferredReleasePeriod: text(raw.preferredReleasePeriod, limits.preferredReleasePeriod),
-    datesToAvoid: text(raw.datesToAvoid, limits.datesToAvoid),
     publicationPermission: raw.publicationPermission === true,
     archivePermission: raw.archivePermission === true,
     privacyConsent: raw.privacyConsent === true,
@@ -213,7 +211,6 @@ export async function POST(request: Request) {
       field("Download link", submission.downloadLink),
       field("Press photo", submission.pressPhotoLink),
       field("Preferred release period", submission.preferredReleasePeriod),
-      field("Dates to avoid", submission.datesToAvoid),
     ].join("");
 
     try {
