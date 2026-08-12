@@ -1265,6 +1265,86 @@ img { display: block; }
 .form-grid input:focus,
 .form-grid select:focus,
 .form-grid textarea:focus { border-color: var(--acid); }
+.release-date-picker {
+  position: relative;
+  padding: 32px clamp(24px, 5vw, 82px) 42px;
+  border-bottom: 1px solid var(--line);
+}
+.release-date-picker-heading {
+  display: flex;
+  gap: 30px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 26px;
+}
+.release-date-picker-heading > div { display: grid; gap: 10px; }
+.release-date-picker-heading span {
+  color: var(--grey-light);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.release-date-picker-heading small {
+  max-width: 680px;
+  color: var(--grey);
+  font-size: 9px;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+.release-date-picker-heading strong {
+  flex: 0 0 auto;
+  color: var(--acid);
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.release-date-months {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+.release-date-months details { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.release-date-months summary {
+  display: flex;
+  min-height: 60px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 0 18px;
+  color: var(--white);
+  cursor: pointer;
+  font-size: 11px;
+  list-style: none;
+  text-transform: uppercase;
+}
+.release-date-months summary::-webkit-details-marker { display: none; }
+.release-date-months summary::after { content: "+"; color: var(--acid); font-size: 18px; }
+.release-date-months details[open] summary::after { content: "−"; }
+.release-date-months summary span:last-child { color: var(--grey); font-size: 9px; }
+.release-date-options {
+  display: grid;
+  max-height: 330px;
+  overflow-y: auto;
+  border-top: 1px solid var(--line);
+}
+.release-date-options label {
+  display: grid;
+  min-height: 48px;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--line);
+  color: var(--grey-light);
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.release-date-options label:last-child { border-bottom: 0; }
+.release-date-options label.selected { background: var(--acid); color: var(--black); }
+.release-date-options input { width: 16px; height: 16px; accent-color: var(--black); }
+.release-date-options input:disabled + span { opacity: .35; }
 .form-consent {
   display: flex;
   min-height: 100px;
@@ -1609,6 +1689,11 @@ img { display: block; }
   .form-grid { grid-template-columns: 1fr; }
   .form-grid label,
   .form-grid label.form-span-2 { grid-column: auto; padding: 24px 20px; border-right: 0; }
+  .release-date-picker { padding: 26px 20px 34px; }
+  .release-date-picker-heading { display: grid; gap: 14px; }
+  .release-date-months { grid-template-columns: 1fr; }
+  .release-date-months summary { min-height: 56px; padding: 0 14px; }
+  .release-date-options label { min-height: 52px; padding: 10px 14px; }
   .form-consent { padding: 24px 20px; }
   .form-submit-row { grid-template-columns: 1fr; gap: 20px; padding: 30px 20px 42px; }
   .archive-audio { min-height: 0; }

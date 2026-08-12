@@ -127,6 +127,7 @@ export async function POST(request: Request) {
     submission.downloadLink,
     submission.biography,
     submission.pressPhotoLink,
+    submission.preferredReleasePeriod,
   ];
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email);
   const biographyWords = wordCount(submission.biography);

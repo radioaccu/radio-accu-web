@@ -4,14 +4,88 @@ import { useState, type FormEvent } from "react";
 
 type SubmitState = "idle" | "sending" | "success" | "error";
 
+type ReleaseDateChoice = {
+  date: string;
+  label: string;
+  month: string;
+};
+
+const MAX_RELEASE_DATES = 5;
+
+function buildReleaseDateChoices() {
+  const brusselsDate = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Brussels",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const [year, month, day] = brusselsDate.split("-").map(Number);
+  const firstDate = new Date(Date.UTC(year, month - 1, day));
+  const lastDate = new Date(Date.UTC(year + 1, 11, 31));
+  const choices: ReleaseDateChoice[] = [];
+
+  for (const date = new Date(firstDate); date <= lastDate; date.setUTCDate(date.getUTCDate() + 1)) {
+    const weekday = date.getUTCDay();
+    if (weekday === 0 || weekday === 6) continue;
+
+    choices.push({
+      date: date.toISOString().slice(0, 10),
+      label: new Intl.DateTimeFormat("en-GB", {
+        timeZone: "UTC",
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }).format(date),
+      month: new Intl.DateTimeFormat("en-GB", {
+        timeZone: "UTC",
+        month: "long",
+        year: "numeric",
+      }).format(date),
+    });
+  }
+
+  return choices;
+}
+
 export function GuestMixSubmissionForm() {
   const [state, setState] = useState<SubmitState>("idle");
   const [message, setMessage] = useState("");
+  const [releaseDateChoices] = useState<ReleaseDateChoice[]>(buildReleaseDateChoices);
+  const [selectedReleaseDates, setSelectedReleaseDates] = useState<string[]>([]);
+
+  const releaseDateGroups = releaseDateChoices.reduce<Array<{ month: string; choices: ReleaseDateChoice[] }>>(
+    (groups, choice) => {
+      const currentGroup = groups.at(-1);
+      if (currentGroup?.month === choice.month) currentGroup.choices.push(choice);
+      else groups.push({ month: choice.month, choices: [choice] });
+      return groups;
+    },
+    [],
+  );
+
+  function toggleReleaseDate(date: string) {
+    setSelectedReleaseDates((current) => {
+      if (current.includes(date)) return current.filter((item) => item !== date);
+      if (current.length >= MAX_RELEASE_DATES) return current;
+      return [...current, date];
+    });
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const values = Object.fromEntries(new FormData(form).entries());
+    const preferredReleasePeriod = releaseDateChoices
+      .filter((choice) => selectedReleaseDates.includes(choice.date))
+      .map((choice) => choice.label)
+      .join("\n");
+
+    if (!preferredReleasePeriod) {
+      setState("error");
+      setMessage("Please select at least one preferred release date.");
+      return;
+    }
 
     setState("sending");
     setMessage("");
@@ -22,6 +96,7 @@ export function GuestMixSubmissionForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...values,
+          preferredReleasePeriod,
           exclusive: values.exclusive === "Yes",
           publicationPermission: values.publicationPermission === "on",
           archivePermission: values.archivePermission === "on",
@@ -35,6 +110,7 @@ export function GuestMixSubmissionForm() {
       }
 
       form.reset();
+      setSelectedReleaseDates([]);
       setState("success");
       setMessage("Your Guest Mix submission has been received. Radio ACCU will confirm the release date by e-mail.");
     } catch (error) {
@@ -200,12 +276,49 @@ export function GuestMixSubmissionForm() {
         </div>
       </div>
 
+      <div className="release-date-picker">
+        <div className="release-date-picker-heading">
+          <div>
+            <span>Preferred release dates *</span>
+            <small>Choose up to five weekdays. Radio ACCU will confirm the final release date by e-mail.</small>
+          </div>
+          <strong>{selectedReleaseDates.length} / {MAX_RELEASE_DATES} selected</strong>
+        </div>
+
+        <div className="release-date-months">
+          {releaseDateGroups.map((group, groupIndex) => {
+            const selectedInMonth = group.choices.filter((choice) => selectedReleaseDates.includes(choice.date)).length;
+            return (
+              <details key={group.month} open={groupIndex === 0 ? true : undefined}>
+                <summary>
+                  <span>{group.month}</span>
+                  <span>{selectedInMonth ? `${selectedInMonth} selected` : `${group.choices.length} weekdays`}</span>
+                </summary>
+                <div className="release-date-options">
+                  {group.choices.map((choice) => {
+                    const selected = selectedReleaseDates.includes(choice.date);
+                    const disabled = !selected && selectedReleaseDates.length >= MAX_RELEASE_DATES;
+                    return (
+                      <label className={selected ? "selected" : ""} key={choice.date}>
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          disabled={disabled}
+                          onChange={() => toggleReleaseDate(choice.date)}
+                        />
+                        <span>{choice.label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </details>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="form-grid">
-        <label>
-          <span>Preferred release period</span>
-          <textarea name="preferredReleasePeriod" maxLength={700} rows={4} />
-        </label>
-        <label>
+        <label className="form-span-2">
           <span>Dates to avoid</span>
           <textarea name="datesToAvoid" maxLength={700} rows={4} />
         </label>
