@@ -38,7 +38,7 @@ function buildReleaseDateChoices() {
   }).format(new Date());
   const [year, month, day] = brusselsDate.split("-").map(Number);
   const firstDate = new Date(Date.UTC(year, month - 1, day));
-  const lastDate = new Date(Date.UTC(year + 1, 11, 31));
+  const lastDate = new Date(Date.UTC(year, 11, 31));
   const choices: ReleaseDateChoice[] = [];
 
   for (const date = new Date(firstDate); date <= lastDate; date.setUTCDate(date.getUTCDate() + 1)) {
