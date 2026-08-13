@@ -448,13 +448,39 @@ export function GuestMixSubmissionForm() {
       </label>
 
       <div className="form-submit-row">
-        <button disabled={state === "sending" || state === "success"} type="submit">
-          {state === "sending" ? "Connecting…" : state === "success" ? "Submission received" : "Submit Guest Mix"}
-          <span aria-hidden="true">↗</span>
-        </button>
-        <p className={`form-response ${state}`} aria-live="polite">
-          {message}
-        </p>
+        <div className="form-submit-copy">
+          <span>Final check</span>
+          <strong>Send your signal to ACCU.</strong>
+          <p>Review the information above. Required fields are marked with an asterisk.</p>
+        </div>
+
+        <div className="form-submit-action">
+          <button disabled={state === "sending" || state === "success"} type="submit">
+            {state === "sending" ? "Connecting…" : state === "success" ? "Submission received" : "Submit Guest Mix"}
+            <span aria-hidden="true">↗</span>
+          </button>
+          <p className={`form-response ${state}`} aria-live="polite">
+            {message || "Your submission is stored privately and reviewed by the Radio ACCU team."}
+          </p>
+        </div>
+
+        <div className="form-submit-process" aria-label="What happens after submission">
+          <div>
+            <span>01</span>
+            <strong>Received</strong>
+            <p>Your details and links are saved securely in ACCU HQ.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>Reviewed</strong>
+            <p>The ACCU team checks your mix and promotional assets.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Confirmed</strong>
+            <p>We contact you by e-mail with the final release date.</p>
+          </div>
+        </div>
       </div>
     </form>
   );
