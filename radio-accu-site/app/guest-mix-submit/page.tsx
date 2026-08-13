@@ -5,6 +5,30 @@ import { GuestMixSubmissionForm } from "../_components/GuestMixSubmissionForm";
 export const metadata: Metadata = {
   title: "Guest Mix submission — Radio ACCU",
   description: "Private submission portal for invited Radio ACCU Guest Mix artists.",
+  alternates: {
+    canonical: "https://submit.radioaccu.com/guest-mix-submit",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://submit.radioaccu.com/guest-mix-submit",
+    title: "Guest Mix submission — Radio ACCU",
+    description: "Private submission portal for invited Radio ACCU Guest Mix artists.",
+    siteName: "Radio ACCU",
+    images: [
+      {
+        url: "https://submit.radioaccu.com/guest-mix-social-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Radio ACCU chrome logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Guest Mix submission — Radio ACCU",
+    description: "Private submission portal for invited Radio ACCU Guest Mix artists.",
+    images: ["https://submit.radioaccu.com/guest-mix-social-preview.png"],
+  },
   robots: { index: false, follow: false },
 };
 
