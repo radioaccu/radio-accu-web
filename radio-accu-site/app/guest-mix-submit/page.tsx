@@ -76,10 +76,6 @@ export default function GuestMixSubmitPage() {
 
       <GuestMixSubmissionForm />
       <footer className="gm-portal-footer">
-        <a className="gm-footer-mark" href="https://radioaccu.com" aria-label="Return to Radio ACCU">
-          <Image src="/accu-symbol-white.png" alt="" width={3000} height={3000} />
-          <span>Radio ACCU</span>
-        </a>
         <div className="gm-footer-statement">
           <span>Private Guest Mix portal</span>
           <p>A connection can unite.</p>
