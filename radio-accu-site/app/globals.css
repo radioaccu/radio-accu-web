@@ -1265,11 +1265,25 @@ img { display: block; }
 .form-grid input:focus,
 .form-grid select:focus,
 .form-grid textarea:focus { border-color: var(--acid); }
+.form-grid input[aria-invalid="true"],
+.form-grid select[aria-invalid="true"],
+.form-grid textarea[aria-invalid="true"] { border-color: #ff735f; }
+.form-field-error {
+  display: block;
+  margin: -3px 0 0;
+  color: #ff735f !important;
+  font-size: 10px !important;
+  font-weight: 600;
+  line-height: 1.5 !important;
+  text-transform: none !important;
+}
 .release-date-picker {
   position: relative;
   padding: 32px clamp(24px, 5vw, 82px) 42px;
   border-bottom: 1px solid var(--line);
 }
+.release-date-picker.invalid { box-shadow: inset 3px 0 0 #ff735f; }
+.release-date-picker > .form-field-error { margin: -12px 0 22px; }
 .release-date-picker-heading {
   display: flex;
   gap: 30px;
@@ -1358,6 +1372,8 @@ img { display: block; }
   text-transform: uppercase;
 }
 .form-consent input { width: 20px; height: 20px; accent-color: var(--acid); }
+.form-consent.invalid { box-shadow: inset 3px 0 0 #ff735f; }
+.form-consent .form-field-error { margin-top: 8px; }
 .form-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .form-submit-row {
   display: grid;

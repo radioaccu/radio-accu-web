@@ -12,12 +12,9 @@ type GuestMixPayload = Record<string, unknown> & {
 const limits = {
   artistName: 120,
   email: 180,
-  country: 100,
   instagram: 300,
   soundcloud: 500,
   spotify: 500,
-  mixcloud: 500,
-  artistWebsite: 500,
   guestMixTitle: 180,
   mixLength: 50,
   audioFormat: 50,
@@ -86,12 +83,9 @@ export async function POST(request: Request) {
   const submission = {
     artistName: text(raw.artistName, limits.artistName),
     email: text(raw.email, limits.email),
-    country: text(raw.country, limits.country),
     instagram: text(raw.instagram, limits.instagram),
     soundcloud: text(raw.soundcloud, limits.soundcloud),
     spotify: text(raw.spotify, limits.spotify),
-    mixcloud: text(raw.mixcloud, limits.mixcloud),
-    artistWebsite: text(raw.artistWebsite, limits.artistWebsite),
     guestMixTitle: text(raw.guestMixTitle, limits.guestMixTitle),
     mixLength: text(raw.mixLength, limits.mixLength),
     audioFormat: text(raw.audioFormat, limits.audioFormat),
@@ -113,51 +107,54 @@ export async function POST(request: Request) {
     privacyConsent: raw.privacyConsent === true,
   };
 
-  const required = [
-    submission.artistName,
-    submission.email,
-    submission.country,
-    submission.instagram,
-    submission.soundcloud,
-    submission.guestMixTitle,
-    submission.mixLength,
-    submission.audioFormat,
-    submission.downloadLink,
-    submission.biography,
-    submission.pressPhotoLink,
-    submission.preferredReleasePeriod,
-  ];
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email);
   const biographyWords = wordCount(submission.biography);
   const exclusiveWasAnswered = typeof raw.exclusive === "boolean";
-  const links = [
-    submission.soundcloud,
-    submission.spotify,
-    submission.mixcloud,
-    submission.artistWebsite,
-    submission.downloadLink,
-    submission.pressPhotoLink,
-    submission.epkLink,
-    submission.artistLogoLink,
-    submission.promoArtworkLink,
-    submission.voiceIdLink,
+  const fieldErrors: Record<string, string> = {};
+  const requiredFields: Array<[keyof typeof submission, string, string]> = [
+    ["artistName", submission.artistName, "Artist / DJ name is required."],
+    ["email", submission.email, "E-mail address is required."],
+    ["instagram", submission.instagram, "Instagram is required."],
+    ["soundcloud", submission.soundcloud, "SoundCloud is required."],
+    ["guestMixTitle", submission.guestMixTitle, "Guest Mix title is required."],
+    ["mixLength", submission.mixLength, "Mix length is required."],
+    ["audioFormat", submission.audioFormat, "Select an audio format."],
+    ["downloadLink", submission.downloadLink, "A mix download link is required."],
+    ["biography", submission.biography, "Biography is required."],
+    ["pressPhotoLink", submission.pressPhotoLink, "A press photo link is required."],
+    ["preferredReleasePeriod", submission.preferredReleasePeriod, "Select at least one preferred release date."],
   ];
+  requiredFields.forEach(([name, value, error]) => {
+    if (!value) fieldErrors[name] = error;
+  });
+  if (submission.email && !validEmail) fieldErrors.email = "Enter a valid e-mail address.";
+  if (!exclusiveWasAnswered) fieldErrors.exclusive = "Select Yes or No.";
 
-  if (required.some((value) => !value) || !validEmail || !exclusiveWasAnswered) {
-    return Response.json({ message: "Please complete all required fields correctly." }, { status: 400 });
+  const linkFields: Array<[string, string]> = [
+    ["soundcloud", submission.soundcloud],
+    ["spotify", submission.spotify],
+    ["downloadLink", submission.downloadLink],
+    ["pressPhotoLink", submission.pressPhotoLink],
+    ["epkLink", submission.epkLink],
+    ["artistLogoLink", submission.artistLogoLink],
+    ["promoArtworkLink", submission.promoArtworkLink],
+    ["voiceIdLink", submission.voiceIdLink],
+  ];
+  linkFields.forEach(([name, value]) => {
+    if (value && !isHttpUrl(value)) fieldErrors[name] = "Enter a complete http:// or https:// link.";
+  });
+  if (submission.biography && (biographyWords < 100 || biographyWords > 250)) {
+    fieldErrors.biography = `Biography must contain 100–250 words (currently ${biographyWords}).`;
   }
-  if (links.some((value) => !isHttpUrl(value))) {
-    return Response.json({ message: "Please check that every submitted link starts with https:// or http://." }, { status: 400 });
-  }
-  if (biographyWords < 100 || biographyWords > 250) {
-    return Response.json({ message: "The biography must contain between 100 and 250 words." }, { status: 400 });
-  }
-  if (
-    !submission.publicationPermission ||
-    !submission.archivePermission ||
-    !submission.privacyConsent
-  ) {
-    return Response.json({ message: "All permission confirmations are required." }, { status: 400 });
+  if (!submission.publicationPermission) fieldErrors.publicationPermission = "This permission is required.";
+  if (!submission.archivePermission) fieldErrors.archivePermission = "This confirmation is required.";
+  if (!submission.privacyConsent) fieldErrors.privacyConsent = "This consent is required.";
+
+  if (Object.keys(fieldErrors).length) {
+    return Response.json(
+      { message: "Please complete the highlighted required information.", fieldErrors },
+      { status: 400 },
+    );
   }
 
   const webhookUrl = process.env.GOOGLE_APPS_SCRIPT_GM_WEBHOOK_URL;
@@ -205,7 +202,6 @@ export async function POST(request: Request) {
     const rows = [
       field("Artist / DJ", submission.artistName),
       field("E-mail", submission.email),
-      field("Country", submission.country),
       field("Guest Mix title", submission.guestMixTitle),
       field("Audio format", submission.audioFormat),
       field("Download link", submission.downloadLink),
