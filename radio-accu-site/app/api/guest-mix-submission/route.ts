@@ -14,7 +14,6 @@ const limits = {
   email: 180,
   instagram: 300,
   soundcloud: 500,
-  spotify: 500,
   guestMixTitle: 180,
   mixLength: 50,
   audioFormat: 50,
@@ -85,7 +84,6 @@ export async function POST(request: Request) {
     email: text(raw.email, limits.email),
     instagram: text(raw.instagram, limits.instagram),
     soundcloud: text(raw.soundcloud, limits.soundcloud),
-    spotify: text(raw.spotify, limits.spotify),
     guestMixTitle: text(raw.guestMixTitle, limits.guestMixTitle),
     mixLength: text(raw.mixLength, limits.mixLength),
     audioFormat: text(raw.audioFormat, limits.audioFormat),
@@ -132,7 +130,6 @@ export async function POST(request: Request) {
 
   const linkFields: Array<[string, string]> = [
     ["soundcloud", submission.soundcloud],
-    ["spotify", submission.spotify],
     ["downloadLink", submission.downloadLink],
     ["pressPhotoLink", submission.pressPhotoLink],
     ["epkLink", submission.epkLink],

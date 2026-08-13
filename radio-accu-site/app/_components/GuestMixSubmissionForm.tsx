@@ -150,7 +150,7 @@ export function GuestMixSubmissionForm() {
     ["soundcloud", "downloadLink", "pressPhotoLink"].forEach((name) => {
       if (value(name) && !isHttpUrl(value(name))) errors[name] = "Enter a complete http:// or https:// link.";
     });
-    ["spotify", "epkLink", "artistLogoLink", "promoArtworkLink", "voiceIdLink"].forEach((name) => {
+    ["epkLink", "artistLogoLink", "promoArtworkLink", "voiceIdLink"].forEach((name) => {
       if (value(name) && !isHttpUrl(value(name))) errors[name] = "Enter a complete http:// or https:// link, or leave this optional field empty.";
     });
 
@@ -247,11 +247,6 @@ export function GuestMixSubmissionForm() {
           <span>SoundCloud *</span>
           <input name="soundcloud" required type="url" maxLength={500} placeholder="https://soundcloud.com/…" aria-invalid={Boolean(fieldErrors.soundcloud)} aria-describedby={fieldErrors.soundcloud ? "soundcloud-error" : undefined} />
           <FieldError errors={fieldErrors} name="soundcloud" />
-        </label>
-        <label>
-          <span>Spotify artist page</span>
-          <input name="spotify" type="url" maxLength={500} aria-invalid={Boolean(fieldErrors.spotify)} aria-describedby={fieldErrors.spotify ? "spotify-error" : undefined} />
-          <FieldError errors={fieldErrors} name="spotify" />
         </label>
       </div>
 
