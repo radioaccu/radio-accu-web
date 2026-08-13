@@ -25,14 +25,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname === portalPath && hostname !== "localhost" && hostname !== "127.0.0.1") {
-    const destination = request.nextUrl.clone();
-    destination.protocol = "https:";
-    destination.hostname = portalHostname;
-    destination.port = "";
-    return NextResponse.redirect(destination);
-  }
-
   return NextResponse.next();
 }
 
